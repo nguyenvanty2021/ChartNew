@@ -1,0 +1,22 @@
+.loading {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25));
+  left: 0;
+  z-index: 99999;
+  &__icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+  }
+}
+.loadingShow {
+  display: flex;
+}
+.loadingNone {
+  display: none;
+}

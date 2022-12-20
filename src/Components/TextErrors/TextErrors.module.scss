@@ -1,0 +1,10 @@
+@import "./../../Styles/global.scss";
+.textErrors {
+  color: $colorRed;
+  width: 100%;
+  background-color: transparent !important;
+  margin-top: 0.25rem;
+  @include to_SmPhone {
+    font-size: 12px;
+  }
+}

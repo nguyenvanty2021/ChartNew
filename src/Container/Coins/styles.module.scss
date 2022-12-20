@@ -1,0 +1,214 @@
+.px {
+  margin: 0;
+  padding: 0;
+}
+.range {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-wrap: wrap;
+  &__btn {
+    margin-bottom: 1rem;
+  }
+}
+.titleShow {
+  opacity: 1;
+}
+.titleHidden {
+  opacity: 0;
+}
+.marketDisable {
+  h3 {
+    color: #cccccc !important;
+  }
+  span {
+    background-color: #cccccc !important;
+  }
+}
+.market {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+  &__cap {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    &__icon {
+      margin-right: 5px;
+      width: 18px;
+      height: 2px;
+      background-color: #2862ff;
+      display: inline-block;
+    }
+  }
+  &__dot {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    &__item {
+      background-color: black;
+      width: 12px;
+      margin-right: 5px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+  }
+  &__icon {
+    color: #2862ff;
+    margin-right: 5px;
+  }
+  h3 {
+    margin: 0 20px 0 0 !important;
+    padding: 0 !important;
+    font-size: 12px;
+    color: #2862ff;
+    cursor: pointer;
+  }
+}
+.chartLightweight {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  &__titleHeight550 {
+    height: 550px !important;
+  }
+  &__titleHeight300 {
+    height: 300px !important;
+  }
+  &__title {
+    transform: rotate(180deg);
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 27.5px 0 85px 0;
+    &__market {
+      color: #2862ff;
+    }
+    h3 {
+      margin: 0 !important;
+      padding: 0 !important;
+      font-size: 12px;
+    }
+  }
+}
+.title {
+  margin-top: 20px;
+}
+.chart {
+  width: 100%;
+  &__heart {
+    color: red !important;
+    cursor: pointer;
+    font-size: 1.75rem;
+  }
+}
+.coins {
+  margin: 20px 115px !important;
+  @media only screen and (max-width: 1366px) {
+    margin: 20px 100px !important;
+  }
+  @media only screen and (max-width: 960px) {
+    margin: 20px !important;
+  }
+  &__title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    h3 {
+      margin-top: 10px;
+    }
+  }
+}
+.new {
+  text-align: center;
+  color: rgb(34, 37, 49);
+  line-height: 28px;
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 24px;
+}
+.title {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  &__child {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    &__datepicker {
+      :global {
+        margin: 0 0 0 2.5px !important;
+        padding: 0 !important;
+        .ant-picker-input > input::placeholder {
+          color: #727272;
+        }
+      }
+    }
+    &__right {
+      flex-direction: column;
+    }
+    &__zoom {
+      cursor: unset !important;
+      color: #727272;
+    }
+    &__rangeIcon {
+      cursor: pointer;
+      width: 26px;
+      height: 25px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 12px;
+      &__item {
+        font-size: 1.25rem;
+      }
+    }
+    &__range {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      flex-wrap: wrap;
+      &__item {
+        text-align: center;
+        color: #333333;
+        background-color: #f7f6f8;
+        height: 22px;
+        min-width: 32px;
+      }
+      &__itemScaleSpecial {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 25px !important;
+        min-width: 79px !important;
+      }
+      &__itemClicked {
+        background-color: #e5ebf5 !important;
+        color: #000000 !important;
+        font-weight: bold;
+      }
+      &__itemScale {
+        background-color: #e5ebf5 !important;
+        color: #000000 !important;
+        font-weight: unset !important;
+      }
+      :hover {
+        background-color: #e5ebf5;
+        color: #000000;
+      }
+    }
+    p {
+      cursor: pointer;
+      font-size: 12px;
+      margin-right: 5px;
+    }
+  }
+}

@@ -1,0 +1,86 @@
+$SmPhone: 375px;
+$MDPhone: 475px;
+$LDPhone: 576px;
+$SmTablet: 768px;
+$MTablet: 992px;
+$SmDesktop: 1024px;
+$SDesktop: 1280px;
+$MDesktop: 1366px;
+$LDesktop: 1440px;
+$XLDesktop: 1680px;
+$XXLDesktop: 1920px;
+
+@mixin to_SmPhone {
+	@media (max-width: #{$SmPhone}) {
+		@content;
+	}
+}
+@mixin to_MDPhone {
+	@media (max-width: #{$MDPhone}) {
+		@content;
+	}
+}
+
+@mixin to_LDPhone {
+	@media (max-width: #{$LDPhone}) {
+		@content;
+	}
+}
+
+@mixin to_SmTablet {
+	@media (max-width: #{$SmTablet}) {
+		@content;
+	}
+}
+
+@mixin to_MTablet {
+	@media (max-width: #{$MTablet}) {
+		@content;
+	}
+}
+
+@mixin to_SmDesktop {
+	@media (max-width: #{$SmDesktop}) {
+		@content;
+	}
+}
+
+@mixin to_SDesktop {
+	@media (max-width: #{$SDesktop}) {
+		@content;
+	}
+}
+@mixin to_MDesktop {
+	@media (max-width: #{$MDesktop}) {
+		@content;
+	}
+}
+@mixin to_LDesktop {
+	@media (max-width: #{$LDesktop}) {
+		@content;
+	}
+}
+@mixin to_XLDesktop {
+	@media (max-width: #{$XLDesktop}) {
+		@content;
+	}
+}
+
+@mixin to_XXLDesktop {
+	@media (max-width: #{$XXLDesktop}) {
+		@content;
+	}
+}
+
+@mixin from_XXLDesktop {
+	@media (min-width: #{$XXLDesktop}) {
+		@content;
+	}
+}
+// @import "./media.scss;
+// Example
+// @include from992_ {
+//   background-image: url("/images/map.png");
+//   flex-direction: row;
+//   justify-content: space-between;
+// }
