@@ -2,6 +2,9 @@
   margin: 0;
   padding: 0;
 }
+.coupleChart {
+  width: 100%;
+}
 .range {
   display: flex;
   justify-content: flex-end;
@@ -73,7 +76,8 @@
   align-items: center;
   width: 100%;
   &__titleHeight550 {
-    height: 550px !important;
+    height: 500px !important;
+    padding: 0 0 190px 0 !important;
   }
   &__titleHeight300 {
     height: 300px !important;
@@ -85,7 +89,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 27.5px 0 85px 0;
+    padding: 0 0 85px 0;
     &__market {
       color: #2862ff;
     }

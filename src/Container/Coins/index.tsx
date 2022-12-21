@@ -150,7 +150,7 @@ const RangePickerComp = ({
 };
 const RangePickerCompHOC = memo(RangePickerComp);
 const ChartComponent = (props: any) => {
-  const { data, range, heightDefault, title } = props;
+  const { data, range, heightDefault, title, type } = props;
   const colors: any = {
     backgroundColor: "white",
     lineColor: "#2962FF",
@@ -172,22 +172,25 @@ const ChartComponent = (props: any) => {
         background: { type: ColorType.Solid, color: colors.backgroundColor },
         textColor: colors.textColor,
       },
+      handleScroll: false,
+      handleScale: false,
       rightPriceScale: {
         // invertScale: true,
-        // // borderVisible: false,
+        borderVisible: false,
         // scaleMargins: {
         //   top: 0.3,
         //   bottom: 0.25,
         // },
         visible: false,
       },
+
       leftPriceScale: {
         scaleMargins: {
           top: 0.3, // leave some space for the legend
           bottom: 0.25,
         },
         visible: true,
-        // borderVisible: false,
+        borderVisible: false,
       },
       grid: {
         vertLines: {
@@ -199,6 +202,9 @@ const ChartComponent = (props: any) => {
       },
 
       timeScale: {
+        visible: type === "bottom" ? true : false,
+        // timeVisible: false,
+        // secondsVisible: false,
         tickMarkFormatter: (time: any) => {
           return range !== "1D"
             ? formatDate(time, formatDateNormal)
@@ -214,29 +220,40 @@ const ChartComponent = (props: any) => {
               });
         },
       },
+
       width: chartContainerRef.current.clientWidth,
-      height: heightDefault,
+      height: type === "above" ? heightDefault : 70,
     });
     chart.timeScale().fitContent();
-    //  addLineSeries
+    //  addLineSeries addAreaSeries
+
     let newSeries = chart.addAreaSeries({
+      // autoScale: false, // disables auto scaling based on visible content
       priceFormat: {
         type: "price",
         precision: data?.length > 0 ? handleFormatCoinPrice(priceFirst) : 0,
         minMove: handleFormatCoin(priceFirst),
       },
+      // handleScale: {
+      //   priceAxisPressedMouseMove: true,
+      //   timeAxisPressedMouseMove: true,
+      // },
+
+      // priceScale: {
+      //   autoScale: false,
+      // },
       lineWidth: 2,
       // price: 1234,
       // lastValueVisible: false,
       // priceLineVisible: false,
-      crossHairMarkerVisible: false,
+      crossHairMarkerVisible: true,
       lineColor: colors.lineColor,
       topColor: colors.areaTopColor,
       bottomColor: colors.areaBottomColor,
       // axisLabelVisible: true,
       // title: "my label",
     });
-    title.marketCap && newSeries.setData(data);
+    type === "above" && title.marketCap && newSeries.setData(data);
     const volumeSeries = chart.addHistogramSeries({
       color: "black",
       priceFormat: {
@@ -244,6 +261,7 @@ const ChartComponent = (props: any) => {
       },
       priceScaleId: "", // set as an overlay by setting a blank priceScaleId
       // set the positioning of the volume series
+      lastValueVisible: false,
       scaleMargins: {
         top: 0.875, // highest point of the series will be 70% away from the top
         bottom: 0,
@@ -251,21 +269,21 @@ const ChartComponent = (props: any) => {
     });
     volumeSeries.applyOptions({
       scaleMargins: {
-        top: 0.875, // highest point of the series will be 70% away from the top
-        bottom: 0, // lowest point will be at the very bottom.
-        // top: 0.1, // highest point of the series will be 10% away from the top
-        // bottom: 0.4, // lowest point will be 40% away from the bottom
+        // top: 0.875, // highest point of the series will be 70% away from the top
+        // bottom: 0, // lowest point will be at the very bottom.
+        top: 0.1, // highest point of the series will be 10% away from the top
+        bottom: 0, // lowest point will be 40% away from the bottom
       },
     });
-    title.vol && volumeSeries.setData(data);
+    type === "bottom" && title.vol && volumeSeries.setData(data);
     const container: any = document.getElementById("container");
     function dateToString(date: any, type: string) {
       const dateString = moment.unix(date).format(type);
       return dateString;
     }
-    const toolTipWidth = 160;
-    const toolTipHeight = 0;
-    const toolTipMargin = 0;
+    const toolTipWidth = -60;
+    const toolTipHeight = -100;
+    const toolTipMargin = 150;
     // Create and style the tooltip html element
     const toolTip: any = document.createElement("div");
     toolTip.style = `width: 200px; height: 95px; position: absolute; display: none; padding: 8px; box-sizing: border-box; font-size: 12px; text-align: left; z-index: 1000; top: 12px; left: 12px; pointer-events: none; border: 1px solid; border-radius: 2px;font-family: 'Trebuchet MS', Roboto, Ubuntu, sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;`;
@@ -274,20 +292,21 @@ const ChartComponent = (props: any) => {
     toolTip.style.borderColor = "#BCBDBC";
     container.appendChild(toolTip);
     // update tooltip
-    chart.subscribeCrosshairMove((param: any) => {
-      if (
-        param.point === undefined ||
-        !param.time ||
-        param.point.x < 0 ||
-        param.point.x > container.clientWidth ||
-        param.point.y < 0 ||
-        param.point.y > container.clientHeight
-      ) {
-        toolTip.style.display = "none";
-      } else {
-        toolTip.style.display = "block";
-        const price = param.seriesPrices.get(newSeries);
-        toolTip.innerHTML = `<div style="display:flex; justify-content:space-between;" >
+    type === "above" &&
+      chart.subscribeCrosshairMove((param: any) => {
+        if (
+          param.point === undefined ||
+          !param.time ||
+          param.point.x < 0 ||
+          param.point.x > container.clientWidth ||
+          param.point.y < 0 ||
+          param.point.y > container.clientHeight
+        ) {
+          toolTip.style.display = "none";
+        } else {
+          toolTip.style.display = "block";
+          const price = param.seriesPrices.get(newSeries);
+          toolTip.innerHTML = `<div style="display:flex; justify-content:space-between;" >
           <b style="font-size:0.85rem;color:black;" >${dateToString(
             param.time,
             formatDateNormal
@@ -324,19 +343,19 @@ const ChartComponent = (props: any) => {
         </b>
         </div>
         `;
-        const y = param.point.y;
-        let left = param.point.x + toolTipMargin;
-        if (left > container.clientWidth - toolTipWidth) {
-          left = param.point.x - toolTipMargin - toolTipWidth;
+          const y = param.point.y;
+          let left = param.point.x + toolTipMargin;
+          if (left > container.clientWidth - toolTipWidth) {
+            left = param.point.x - toolTipMargin - toolTipWidth;
+          }
+          let top = y + toolTipMargin;
+          if (top > container.clientHeight - toolTipHeight) {
+            top = y - toolTipHeight - toolTipMargin;
+          }
+          toolTip.style.left = left + "px";
+          toolTip.style.top = top + "px";
         }
-        let top = y + toolTipMargin;
-        if (top > container.clientHeight - toolTipHeight) {
-          top = y - toolTipHeight - toolTipMargin;
-        }
-        toolTip.style.left = left + "px";
-        toolTip.style.top = top + "px";
-      }
-    });
+      });
     window.addEventListener("resize", handleResize);
     return () => {
       window.removeEventListener("resize", handleResize);
@@ -748,7 +767,7 @@ const Coins = () => {
                           setZoom({
                             ...zoom,
                             status: !zoom.status,
-                            heightDefault: !zoom.status ? 550 : 300,
+                            heightDefault: !zoom.status ? 500 : 300,
                           })
                         }
                         alt=""
@@ -805,14 +824,26 @@ const Coins = () => {
                   </div>
                 )}
 
-                <ChartComponentHOC
-                  from={from}
-                  to={to}
-                  title={title}
-                  heightDefault={zoom.heightDefault}
-                  range={queryParam["range"]}
-                  data={listChartModal?.length > 0 ? listChartModal : []}
-                />
+                <div className={styles.coupleChart}>
+                  <ChartComponentHOC
+                    type="above"
+                    from={from}
+                    to={to}
+                    title={title}
+                    heightDefault={zoom.heightDefault}
+                    range={queryParam["range"]}
+                    data={listChartModal?.length > 0 ? listChartModal : []}
+                  />
+                  <ChartComponentHOC
+                    type="bottom"
+                    from={from}
+                    to={to}
+                    title={title}
+                    heightDefault={zoom.heightDefault}
+                    range={queryParam["range"]}
+                    data={listChartModal?.length > 0 ? listChartModal : []}
+                  />
+                </div>
               </div>
               <SecondaryChart
                 data={secondList?.length > 0 ? secondList : []}
