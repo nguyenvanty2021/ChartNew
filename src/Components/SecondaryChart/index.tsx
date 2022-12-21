@@ -47,7 +47,7 @@ const SecondaryChart: React.FC<SecondaryChartProps> = ({
   const xMax = Math.max(width - margin.left - margin.right, 0);
   const yMax = Math.max(height - margin.top - margin.bottom, 0);
   // accessors
-  const getDate = (d: DataProps) => new Date(d.date);
+  const getDate = (d: DataProps) => new Date(d?.date);
   const getStockValue = (d: DataProps) => d.price;
 
   // scales
@@ -68,8 +68,8 @@ const SecondaryChart: React.FC<SecondaryChartProps> = ({
 
   const initialBrushPosition = React.useMemo(
     () => ({
-      start: { x: dateScale(getDate(data[data.length / 2 - 100])) },
-      end: { x: dateScale(getDate(data[data.length / 2 + 100])) },
+      start: { x: dateScale(getDate(data[data?.length / 2 - 100])) },
+      end: { x: dateScale(getDate(data[data?.length / 2 + 100])) },
     }),
     [dateScale, data]
   );
