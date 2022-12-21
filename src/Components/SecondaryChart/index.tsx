@@ -7,11 +7,11 @@ import { Bounds } from "@visx/brush/lib/types";
 import { max, min, extent } from "d3-array";
 import { SecondaryChartProps } from "./interfaces";
 import { SC } from "./styled";
-import { Group } from "@visx/group";
 import { DataProps } from "../PrimaryChart/interfaces";
 import AreaChart from "../AreaChart";
 import { MarketContext } from "../../store/MarketProvider";
 import moment from "moment";
+import { Group } from "@visx/group";
 import { BrushHandleRenderProps } from "@visx/brush/lib/BrushHandle";
 // We need to manually offset the handles for them to be rendered at the right position
 function BrushHandle({ x, height, isBrushActive }: BrushHandleRenderProps) {
@@ -37,7 +37,7 @@ const SecondaryChart: React.FC<SecondaryChartProps> = ({
   width = 10,
   setListChartModal,
   height,
-  margin = { top: 20, left: 50, bottom: 20, right: 20 },
+  margin = { top: 0, right: 0, bottom: 0, left: 0 },
 }) => {
   const {
     filteredDataState: { setFilteredData },
@@ -47,7 +47,7 @@ const SecondaryChart: React.FC<SecondaryChartProps> = ({
   const xMax = Math.max(width - margin.left - margin.right, 0);
   const yMax = Math.max(height - margin.top - margin.bottom, 0);
   // accessors
-  const getDate = (d: DataProps) => new Date(d?.date);
+  const getDate = (d: DataProps) => new Date(d.date);
   const getStockValue = (d: DataProps) => d.price;
 
   // scales
@@ -68,8 +68,8 @@ const SecondaryChart: React.FC<SecondaryChartProps> = ({
 
   const initialBrushPosition = React.useMemo(
     () => ({
-      start: { x: dateScale(getDate(data[data?.length / 2 - 100])) },
-      end: { x: dateScale(getDate(data[data?.length / 2 + 100])) },
+      start: { x: dateScale(getDate(data[0])) + 50 },
+      end: { x: dateScale(getDate(data[data.length - 1])) - 50 },
     }),
     [dateScale, data]
   );
@@ -102,14 +102,12 @@ const SecondaryChart: React.FC<SecondaryChartProps> = ({
       <svg width={width} height={height}>
         <AreaChart
           hideLeftAxis
-          hideBottomAxis
           data={data}
           width={width}
           margin={{ ...margin }}
           yMax={yMax}
           xScale={dateScale}
           yScale={priceScale}
-          // top={topChartHeight + topChartBottomMargin + margin.top}
           gradientColor="#85A5FF"
         >
           <LinearGradient
@@ -127,10 +125,9 @@ const SecondaryChart: React.FC<SecondaryChartProps> = ({
             width={xMax}
             height={yMax}
             margin={{ ...margin }}
-            renderBrushHandle={(props) => <BrushHandle {...props} />}
-            // useWindowMoveEvents
             handleSize={8}
             resizeTriggerAreas={["left", "right"]}
+            renderBrushHandle={(props) => <BrushHandle {...props} />}
             brushDirection="horizontal"
             initialBrushPosition={initialBrushPosition}
             onChange={onBrushChange}
