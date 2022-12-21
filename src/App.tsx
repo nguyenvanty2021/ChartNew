@@ -14,9 +14,10 @@ import { notify } from "./Utils/notification";
 import Loading from "./Components/Loading";
 import { useState } from "react";
 import { ColumnsType } from "antd/lib/table";
+import moment from "moment";
 interface FormProps<T> {
   pairOfCoin: T;
-  timeRange: T;
+  timeRange: any;
 }
 export interface TimeRangeProps<T> {
   id: T;
@@ -32,14 +33,13 @@ export interface ListWatchedProps {
   priceCoinTo: string;
 }
 export const notifyTime = 1500;
-export const TimePeriod: {
-  [key: string]: TimeFilters;
-} = {
+export const TimePeriod: any = {
   "1D": TimeFilters.P1D,
   "7D": TimeFilters.P7D,
   "1M": TimeFilters.P1M,
   "3M": TimeFilters.P3M,
   "1Y": TimeFilters.P1Y,
+  YTD: String(moment().diff(`${moment().get("year")}/01/01`, "days")),
   ALL: TimeFilters.ALL,
 };
 export const listTimeRange: TimeRangeProps<string>[] = [
@@ -67,6 +67,11 @@ export const listTimeRange: TimeRangeProps<string>[] = [
     id: "5",
     key: "1Y",
     value: TimeFilters.P1Y,
+  },
+  {
+    id: "7",
+    key: "YTD",
+    value: String(moment().diff(`${moment().get("year")}/01/01`, "days")),
   },
   {
     id: "6",

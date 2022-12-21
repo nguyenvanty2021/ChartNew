@@ -4,6 +4,7 @@ export enum TimeFilters {
   P1M = "30",
   P3M = "90",
   P1Y = "365",
+  YTD = "",
   ALL = "max",
 }
 export enum Status {
