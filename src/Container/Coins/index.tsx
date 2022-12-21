@@ -304,7 +304,7 @@ const ChartComponent = (props: any) => {
         <div style="display:flex;margin: 4px 0px;justify-content:flex-start;align-items:center;">
         <div>
         <span style="width:12px;height:12px;background-color:#2862ff;display:inline-block;border-radius:50%;margin-right:2.5px;" ></span>
-        <span style="color: black;font-size:0.85rem;">Market Cap:</span>
+        <span style="color: black;font-size:0.85rem;">PRICE:</span>
         </div>
           <b style="color: black;font-size: 1rem;margin-left: 0.25rem;">
         ${price.toFixed(
@@ -315,7 +315,7 @@ const ChartComponent = (props: any) => {
         <div style="display:flex;margin: 4px 0px;justify-content:flex-start;align-items:center;">
         <div>
         <span style="width:12px;height:12px;background-color:black;display:inline-block;border-radius:50%;margin-right:2.5px;" ></span>
-        <span style="color: black;font-size:0.85rem;">24h Vol:</span>
+        <span style="color: black;font-size:0.85rem;">DOM:</span>
         </div>
           <b style="color: black;font-size: 1rem;margin-left: 0.25rem;">
         ${price.toFixed(
@@ -680,7 +680,7 @@ const Coins = () => {
         <div>
           <div>
             {!zoom.status && (
-              <h3 className={styles.new}>Total Cryptocurrency Market Cap</h3>
+              <h3 className={styles.new}>Total Cryptocurrency Price</h3>
             )}
             <div id="pdf" ref={ref}>
               <div className={styles.title}>
@@ -793,14 +793,14 @@ const Coins = () => {
                         title.vol ? styles.titleShow : styles.titleHidden
                       }
                     >
-                      <b>24h Vol</b>
+                      <b>DOM</b>
                     </h3>
                     <h3
                       className={`${styles.chartLightweight__title__market} ${
                         title.marketCap ? styles.titleShow : styles.titleHidden
                       }`}
                     >
-                      <b>Market Cap</b>
+                      <b>PRICE</b>
                     </h3>
                   </div>
                 )}
@@ -837,7 +837,7 @@ const Coins = () => {
                 >
                   <span className={styles.market__cap__icon}></span>
                   <h3>
-                    <b>Market Cap</b>
+                    <b>PRICE</b>
                   </h3>
                 </div>
                 <div
@@ -848,7 +848,7 @@ const Coins = () => {
                 >
                   <span className={styles.market__dot__item}></span>
                   <h3>
-                    <b>24h Vol</b>
+                    <b>DOM</b>
                   </h3>
                 </div>
               </div>
