@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { scaleLinear, scaleTime } from "@visx/scale";
 import { LinearGradient } from "@visx/gradient";
 import { Brush } from "@visx/brush";
-import BaseBrush from "@visx/brush/lib/BaseBrush";
+import BaseBrush, {
+  BaseBrushState,
+  UpdateBrush,
+} from "@visx/brush/lib/BaseBrush";
 import { Bounds } from "@visx/brush/lib/types";
 import { max, min, extent } from "d3-array";
 import { SecondaryChartProps } from "./interfaces";
@@ -94,9 +97,34 @@ const SecondaryChart: React.FC<SecondaryChartProps> = ({
         value: values.price,
       };
     });
-    setListChartModal([...listRefactor]);
-    setFilteredData(filteredData);
+    if (listRefactor?.length > 0) {
+      setListChartModal([...listRefactor]);
+      setFilteredData(filteredData);
+    }
   };
+  const handleResetClick = () => {
+    if (brushRef?.current) {
+      const updater: UpdateBrush = (prevBrush) => {
+        const newExtent = brushRef.current!.getExtent(
+          initialBrushPosition.start,
+          initialBrushPosition.end
+        );
+
+        const newState: BaseBrushState = {
+          ...prevBrush,
+          start: { y: newExtent.y0, x: newExtent.x0 },
+          end: { y: newExtent.y1, x: newExtent.x1 },
+          extent: newExtent,
+        };
+        return newState;
+      };
+      brushRef.current.updateBrush(updater);
+    }
+  };
+  useEffect(() => {
+    handleResetClick();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
   return (
     <SC.DivComp>
       <svg width={width} height={height}>
