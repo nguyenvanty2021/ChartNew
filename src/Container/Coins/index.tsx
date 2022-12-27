@@ -4,7 +4,6 @@ import expand from "./../../Assets/img/expand.png";
 import noExpand from "./../../Assets/img/noExpand.png";
 import { useReactToPrint } from "react-to-print";
 import styles from "./styles.module.scss";
-
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { useScreenshot, createFileName } from "use-react-screenshot";
 import {
@@ -24,7 +23,7 @@ import {
   notifyTime,
   TimePeriod,
 } from "../../App";
-import { Status } from "../../Constants/enum";
+import { Status, TimeFilters } from "../../Constants/enum";
 import { createChart, ColorType } from "lightweight-charts";
 import { getQueryParam, updateUrl } from "../../Utils/query";
 import Loading from "../../Components/Loading";
@@ -37,6 +36,8 @@ import useWindowDimensions from "../../hooks/useWindowDimensions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import CanvasJSReact from "./../../Assets/canvasjs.stock.react";
+var CanvasJSStockChart = CanvasJSReact.CanvasJSStockChart;
 const formatDateNormal = "DD/MM/YYYY";
 const { RangePicker } = DatePicker;
 const handleFormatCoin = (coin: number) => {
@@ -392,6 +393,12 @@ const Coins = () => {
   });
   const { height } = useWindowDimensions();
   const { from, to }: any = params;
+  const [dataPoints, setDataPoints] = useState<
+    {
+      x: string;
+      y: number;
+    }[]
+  >([]);
   const [checkClickedSelect, setCheckClickedSelect] = useState<boolean>(false);
   const queryParam = getQueryParam<any>();
   const local: any = localStorage?.getItem("listWatched");
@@ -407,6 +414,11 @@ const Coins = () => {
   // const [statusHeart, setStatusHeart] = useState<boolean>(
   //   indexHeart > -1 ? listWatchedState[indexHeart].watched : false
   // );
+  const containerProps = {
+    width: "100%",
+    height: "450px",
+    margin: "auto",
+  };
   const [listChartModal, setListChartModal] = useState<any[]>([]);
   const indexRange = Object.keys(TimePeriod).findIndex(
     (values) => values === queryParam["range"]
@@ -423,8 +435,8 @@ const Coins = () => {
     debounce(async (range: string) => {
       try {
         const listRespon = await Promise.all([
-          coinApi.getAllCoinCouple(from.toLowerCase(), range),
-          coinApi.getAllCoinCouple(to.toLowerCase(), range),
+          coinApi.getAllCoinCouple(from.toLowerCase(), TimeFilters.ALL),
+          coinApi.getAllCoinCouple(to.toLowerCase(), TimeFilters.ALL),
         ]);
         if (
           listRespon.length === 2 &&
@@ -443,6 +455,7 @@ const Coins = () => {
             result.shift();
             const listSecondTemp: any = [];
             const listTemp: any = [];
+            const listDataPoint: any = [];
             result?.forEach((v: any, index: number) => {
               listTemp.push({
                 time: moment(v?.[0]).unix(),
@@ -454,9 +467,14 @@ const Coins = () => {
                 price:
                   parseFloat(v?.[1]) / parseFloat(listCoinTo?.[index]?.[1]),
               });
+              listDataPoint.push({
+                x: new Date(v?.[0]),
+                y: parseFloat(v?.[1]) / parseFloat(listCoinTo?.[index]?.[1]),
+              });
             });
             setSecondList([...listSecondTemp]);
             setListChartModal([...listTemp]);
+            setDataPoints([...listDataPoint]);
             handleSetLocalStorage();
           } else if (listCoinFrom?.length < listCoinTo?.length) {
             const result = listCoinTo.slice(
@@ -466,6 +484,7 @@ const Coins = () => {
             result.push(listCoinTo[listCoinTo.length - 1]);
             result.shift();
             const listSecondTemp: any = [];
+            const listDataPoint: any = [];
             const listTemp: any = [];
             listCoinFrom?.forEach((v: any, index: number) => {
               listTemp.push({
@@ -476,12 +495,18 @@ const Coins = () => {
                 date: new Date(v?.[0]),
                 price: parseFloat(v?.[1]) / parseFloat(result?.[index]?.[1]),
               });
+              listDataPoint.push({
+                x: new Date(v?.[0]),
+                y: parseFloat(v?.[1]) / parseFloat(result?.[index]?.[1]),
+              });
             });
             setSecondList([...listSecondTemp]);
             setListChartModal([...listTemp]);
+            setDataPoints([...listDataPoint]);
             handleSetLocalStorage();
           } else {
             const listTemp: any = [];
+            const listDataPoint: any = [];
             const listSecondTemp: any = [];
             listCoinFrom?.forEach((v: any, index: number) => {
               listTemp.push({
@@ -494,9 +519,14 @@ const Coins = () => {
                 price:
                   parseFloat(v?.[1]) / parseFloat(listCoinTo?.[index]?.[1]),
               });
+              listDataPoint.push({
+                x: new Date(v?.[0]),
+                y: parseFloat(v?.[1]) / parseFloat(listCoinTo?.[index]?.[1]),
+              });
             });
             setSecondList([...listSecondTemp]);
             setListChartModal([...listTemp]);
+            setDataPoints([...listDataPoint]);
             handleSetLocalStorage();
           }
         } else {
@@ -673,6 +703,201 @@ const Coins = () => {
       key: "4",
     },
   ];
+  const options = {
+    theme: "light2",
+    // title: {
+    //   text: "React StockChart with Date-Time Axis",
+    // },
+    //   subtitles: [
+    //     {
+    //       text: "Price-Volume Trend",
+    //     },
+    //   ],
+    // animationEnabled: true,
+    // exportEnabled: true,
+    // rangeChanged: function (e) {
+    //   rangeChangedTriggered = true;
+    // },
+    charts: [
+      {
+        zoomEnabled: true,
+        axisX: {
+          // title: "Bounce Rate",
+          valueFormatString: "DD/MM/YYYY HH:MM:ss", // MMM DD YYYY
+          crosshair: {
+            enabled: true,
+            snapToDataPoint: true,
+            valueFormatString: "DD/MM/YYYY HH:MM:ss", // MMM DD YYYY
+          },
+          // lineThickness: 5,
+          // tickLength: 0,
+          // labelFormatter: function (e) {
+          //   return "123";
+          // },
+        },
+        // legend: {
+        //   verticalAlign: "top",
+        // },
+        // legend: {
+        //   verticalAlign: "top",
+        //   cursor: "pointer",
+        //   itemclick: function (e) {
+        //     if (
+        //       typeof e.dataSeries.visible === "undefined" ||
+        //       e.dataSeries.visible
+        //     ) {
+        //       e.dataSeries.visible = false;
+        //     } else {
+        //       e.dataSeries.visible = true;
+        //     }
+        //     e.chart.render();
+        //   },
+        // },
+        axisY: {
+          title: "PRICE",
+          prefix: "", // $
+          crosshair: {
+            enabled: true,
+            snapToDataPoint: true,
+            valueFormatString: "#,###.##",
+          },
+        },
+        toolTip: {
+          shared: true,
+        },
+        data: [
+          {
+            // axisYType: "secondary",
+            // toolTipContent: "Week {x}: {y}%",
+            name: "PRICE",
+            // type: "splineArea",
+            // type: "area",
+            type: "spline",
+            // showInLegend: true,
+            // legendText: "MWp = one megawatt peak",
+            color: "#57B4E9",
+            yValueFormatString: "#,###.##",
+            xValueFormatString: "DD/MM/YYYY HH:MM:ss", // MMM DD YYYY
+            dataPoints: dataPoints,
+            // toolTipContent:
+            //   '<span style="color:#4F81BC">Year: {x}</span><br/>Min: {y[0]}°C,<br/> Max: {y[1]}°C',
+          },
+        ],
+      },
+      {
+        // zoomEnabled: true,
+        height: 100,
+        axisX: {
+          valueFormatString: "DD/MM/YYYY", // MMM DD YYYY
+          crosshair: {
+            enabled: true,
+            snapToDataPoint: true,
+            valueFormatString: "DD/MM/YYYY HH:MM:ss", // MMM DD YYYY
+          },
+        },
+        axisY: {
+          title: "DOM",
+          prefix: "",
+          crosshair: {
+            enabled: true,
+            snapToDataPoint: true,
+            valueFormatString: "#,###.##",
+          },
+          // tickLength: 0,
+        },
+        toolTip: {
+          shared: true,
+        },
+        data: [
+          {
+            name: "DOM",
+            color: "#767777",
+            yValueFormatString: "#,###.##",
+            xValueFormatString: "DD/MM/YYYY HH:MM:ss", // MMM DD YYYY
+            type: "column",
+            dataPoints: dataPoints,
+          },
+        ],
+      },
+    ],
+    rangeSelector: {
+      // inputFields: {
+      //   startValue: 1000,
+      //   endValue: 5000,
+      //   valueFormatString: "###0",
+      // },
+      // buttons: [
+      //   {
+      //     label: "1000",
+      //     range: 1000,
+      //     rangeType: "number",
+      //   },
+      //   {
+      //     label: "2000",
+      //     range: 2000,
+      //     rangeType: "number",
+      //   },
+      //   {
+      //     label: "5000",
+      //     range: 5000,
+      //     rangeType: "number",
+      //   },
+      //   {
+      //     label: "All",
+      //     rangeType: "all",
+      //   },
+      // ],
+      // buttons: [
+      //   {
+      //     label: "1M",
+      //     range: 1,
+      //     rangeType: "month",
+      //   },
+      //   {
+      //     label: "3M",
+      //     range: 3,
+      //     rangeType: "month",
+      //   },
+      //   {
+      //     label: "1Y",
+      //     range: 1,
+      //     rangeType: "year",
+      //   },
+      //   {
+      //     label: "All",
+      //     // range: null,
+      //     rangeType: "all",
+      //   },
+      // ],
+      // enabled: false,
+    },
+    navigator: {
+      dynamicUpdate: true,
+      data: [
+        {
+          type: "spline",
+          color: "#57B4E9",
+          dataPoints: dataPoints,
+
+          // name: "PRICE",
+          // yValueFormatString: "#,###.##",
+          // xValueFormatString: "DD/MM/YYYY", // MMM DD YYYY
+        },
+      ],
+      slider: {
+        minimum: new Date("2016-05-01"),
+        maximum: new Date("2018-07-01"),
+      },
+      axisX: {
+        labelFontWeight: "bolder",
+        valueFormatString: "DD/MM/YYYY", // MMM DD YYYY
+        labelFontColor: "#999999",
+      },
+    },
+    // rangeSelector: {
+    //   enabled: false,
+    // },
+  };
   useEffect(() => {
     setLoading(true);
     // handleCheckCoin();
@@ -703,7 +928,7 @@ const Coins = () => {
             )}
             <div id="pdf" ref={ref}>
               <div className={styles.title}>
-                <div className={styles.title__child}>
+                {/* <div className={styles.title__child}>
                   <p className={styles.title__child__zoom}>Zoom</p>
                   <div className={styles.title__child__range}>
                     {listTimeRange.map((v, index) => (
@@ -735,7 +960,7 @@ const Coins = () => {
                       </p>
                     ))}
                   </div>
-                </div>
+                </div> */}
                 <div
                   className={`${styles.title__child} ${styles.title__child__right}`}
                 >
@@ -756,11 +981,6 @@ const Coins = () => {
                       </p>
                     ))}
                     <div className={styles.title__child__rangeIcon}>
-                      {/* <FontAwesomeIcon
-                      onClick={() => setZoom(!zoom)}
-                      className={styles.title__child__rangeIcon__item}
-                      icon={faExpand}
-                    /> */}
                       <img
                         src={!zoom.status ? expand : noExpand}
                         onClick={() =>
@@ -789,16 +1009,16 @@ const Coins = () => {
                       </Dropdown>
                     </div>
                   </div>
-                  <div>
+                  {/* <div>
                     <RangePickerCompHOC
                       setStatusClearDate={setStatusClearDate}
                       setListChartModal={setListChartModal}
                       listChartModal={listChartModal}
                     />
-                  </div>
+                  </div> */}
                 </div>
               </div>
-              <div className={styles.chartLightweight}>
+              {/* <div className={styles.chartLightweight}>
                 {!checkClickedSelect && (
                   <div
                     className={`${styles.chartLightweight__title} ${
@@ -844,8 +1064,8 @@ const Coins = () => {
                     data={listChartModal?.length > 0 ? listChartModal : []}
                   />
                 </div>
-              </div>
-              <SecondaryChart
+              </div> */}
+              {/* <SecondaryChart
                 data={secondList?.length > 0 ? secondList : []}
                 height={Math.floor(height * 0.05)}
                 width={boxWidth}
@@ -856,6 +1076,11 @@ const Coins = () => {
                   bottom: 0,
                   left: 0,
                 }}
+              /> */}
+              <CanvasJSStockChart
+                containerProps={containerProps}
+                options={options}
+                /* onRef = {ref => this.chart = ref} */
               />
               <div className={styles.market}>
                 <div

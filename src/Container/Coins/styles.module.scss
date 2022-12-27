@@ -41,7 +41,7 @@
       margin-right: 5px;
       width: 18px;
       height: 2px;
-      background-color: #2862ff;
+      background-color: #57b4e9;
       display: inline-block;
     }
   }
@@ -50,7 +50,7 @@
     justify-content: flex-start;
     align-items: center;
     &__item {
-      background-color: black;
+      background-color: #767777;
       width: 12px;
       margin-right: 5px;
       height: 12px;
@@ -66,7 +66,7 @@
     margin: 0 20px 0 0 !important;
     padding: 0 !important;
     font-size: 12px;
-    color: #2862ff;
+    color: #57b4e9;
     cursor: pointer;
   }
 }
@@ -139,7 +139,7 @@
 }
 .title {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: flex-end;
   flex-wrap: wrap;
   &__child {
