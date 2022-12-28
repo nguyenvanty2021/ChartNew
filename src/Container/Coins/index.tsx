@@ -1,4 +1,3 @@
-// import { HeartFilled, HeartOutlined } from "@ant-design/icons";
 import { Dropdown, MenuProps } from "antd";
 import expand from "./../../Assets/img/expand.png";
 import noExpand from "./../../Assets/img/noExpand.png";
@@ -16,7 +15,6 @@ import {
 } from "react";
 import coinApi from "../../Api/coinApi";
 import {
-  // DrawerComponent,
   handleFormatCoinPrice,
   ListWatchedProps,
   notifyTime,
@@ -44,6 +42,15 @@ const handleFormatCoin = (coin: number) => {
     : coin < 10
     ? 0.0001
     : 0.01;
+};
+const handleFormatCoinPriceChart = (coin: number) => {
+  return coin < 0.01
+    ? "0.######"
+    : coin < 0.1
+    ? "0.#####"
+    : coin < 10
+    ? "#,###.####"
+    : "#,###.###";
 };
 export const timeDebounce = 400;
 export function debounce(fn: any, wait?: number) {
@@ -305,7 +312,6 @@ const Coins = () => {
       y: number;
     }[]
   >([]);
-  const [checkClickedSelect, setCheckClickedSelect] = useState<boolean>(false);
   const queryParam = getQueryParam<any>();
   const local: any = localStorage?.getItem("listWatched");
   const [listWatchedState, setListWatchedState] = useState<ListWatchedProps[]>(
@@ -577,109 +583,243 @@ const Coins = () => {
     // rangeChanged: function (e) {
     //   rangeChangedTriggered = true;
     // },
-    charts: [
-      {
-        zoomEnabled: true,
-        axisX: {
-          // title: "Bounce Rate",
-          valueFormatString: "DD/MM/YYYY HH:MM:ss", // MMM DD YYYY
-          crosshair: {
-            enabled: true,
-            snapToDataPoint: true,
-            valueFormatString: "DD/MM/YYYY HH:MM:ss", // MMM DD YYYY
-          },
-          // lineThickness: 5,
-          // tickLength: 0,
-          // labelFormatter: function (e) {
-          //   return "123";
-          // },
-        },
-        // legend: {
-        //   verticalAlign: "top",
-        // },
-        // legend: {
-        //   verticalAlign: "top",
-        //   cursor: "pointer",
-        //   itemclick: function (e) {
-        //     if (
-        //       typeof e.dataSeries.visible === "undefined" ||
-        //       e.dataSeries.visible
-        //     ) {
-        //       e.dataSeries.visible = false;
-        //     } else {
-        //       e.dataSeries.visible = true;
-        //     }
-        //     e.chart.render();
-        //   },
-        // },
-        axisY: {
-          title: "Price",
-          prefix: "", // $
-          crosshair: {
-            enabled: true,
-            snapToDataPoint: true,
-            valueFormatString: "#,###.##",
-          },
-        },
-        toolTip: {
-          shared: true,
-        },
-        data: [
-          {
-            // axisYType: "secondary",
-            // toolTipContent: "Week {x}: {y}%",
-            name: "PRICE",
-            // type: "splineArea",
-            // type: "area",
-            type: "spline",
-            // showInLegend: true,
-            // legendText: "MWp = one megawatt peak",
-            color: "#57B4E9",
-            yValueFormatString: "#,###.##",
-            xValueFormatString: "DD/MM/YYYY HH:MM:ss", // MMM DD YYYY
-            dataPoints: dataPoints,
-            toolTipContent:
-              '<p style="font-size:0.75rem;color:#000000;margin:0;padding:0;">{x}</p><div style="display:flex;justify-content:flex-start;align-items:center;margin-top:0.25rem;"><span style="width:0.8rem;height:0.8rem;border-radius:50%;margin:0;padding:0;background-color:#57B4E9;"></span><span style="margin-left:0.25rem;">Price: </span><b>{y}</b></div>',
-            // '<p style="width:2.5rem;height:2.5rem;background-color:red;" ></p><span style="color:#57B4E9">{x}</span><br/>PRICE: <b>{y}</b>',
-          },
-        ],
-      },
-      {
-        // zoomEnabled: true,
-        height: !zoom ? 90 : 130,
-        axisX: {
-          valueFormatString: "DD/MM/YYYY", // MMM DD YYYY
-          crosshair: {
-            enabled: true,
-            snapToDataPoint: true,
-            valueFormatString: "DD/MM/YYYY HH:MM:ss", // MMM DD YYYY
-          },
-        },
-        axisY: {
-          title: "DOM",
-          prefix: "",
-          crosshair: {
-            enabled: true,
-            snapToDataPoint: true,
-            valueFormatString: "#,###.##",
-          },
-          // tickLength: 0,
-        },
-        toolTip: {
-          shared: true,
-        },
-        data: [
-          {
-            name: "DOM",
-            color: "#767777",
-            yValueFormatString: "#,###.##",
-            xValueFormatString: "DD/MM/YYYY HH:MM:ss", // MMM DD YYYY
-            type: "column",
-            dataPoints: dataPoints,
-          },
-        ],
-      },
-    ],
+    charts:
+      title.marketCap && title.vol
+        ? [
+            {
+              zoomEnabled: true,
+              axisX: {
+                // title: "Bounce Rate",
+                valueFormatString: " MMM DD YYYY", // MMM DD YYYY
+                crosshair: {
+                  enabled: true,
+                  snapToDataPoint: true,
+                  valueFormatString: " MMM DD YYYY", // MMM DD YYYY
+                },
+                // lineThickness: 5,
+                // tickLength: 0,
+                // labelFormatter: function (e) {
+                //   return "123";
+                // },
+              },
+              // legend: {
+              //   verticalAlign: "top",
+              // },
+              // legend: {
+              //   verticalAlign: "top",
+              //   cursor: "pointer",
+              //   itemclick: function (e) {
+              //     if (
+              //       typeof e.dataSeries.visible === "undefined" ||
+              //       e.dataSeries.visible
+              //     ) {
+              //       e.dataSeries.visible = false;
+              //     } else {
+              //       e.dataSeries.visible = true;
+              //     }
+              //     e.chart.render();
+              //   },
+              // },
+              axisY: {
+                title: "Price",
+                prefix: "", // $
+                crosshair: {
+                  enabled: true,
+                  snapToDataPoint: true,
+                  valueFormatString: handleFormatCoinPriceChart(
+                    dataPoints[0]?.y || 0
+                  ),
+                },
+              },
+              toolTip: {
+                shared: true,
+              },
+              data: [
+                {
+                  // axisYType: "secondary",
+                  // toolTipContent: "Week {x}: {y}%",
+                  name: "PRICE",
+                  // type: "splineArea",
+                  // type: "area",
+                  type: "spline",
+                  // showInLegend: true,
+                  // legendText: "MWp = one megawatt peak",
+                  color: "#57B4E9",
+                  yValueFormatString: handleFormatCoinPriceChart(
+                    dataPoints[0]?.y || 0
+                  ), // "#,###.##"
+                  xValueFormatString: "DD/MM/YYYY HH:MM:ss", // MMM DD YYYY
+                  // xValueType: "dateTime",
+                  dataPoints: dataPoints,
+                  toolTipContent:
+                    '<p style="font-size:0.75rem;color:#000000;margin:0;padding:0;">{x}</p><div style="display:flex;justify-content:flex-start;align-items:center;margin-top:0.25rem;"><span style="width:0.8rem;height:0.8rem;border-radius:50%;margin:0;padding:0;background-color:#57B4E9;"></span><span style="margin-left:0.25rem;">Price: </span><b>{y}</b></div>',
+                  // '<p style="width:2.5rem;height:2.5rem;background-color:red;" ></p><span style="color:#57B4E9">{x}</span><br/>PRICE: <b>{y}</b>',
+                },
+              ],
+            },
+            {
+              // zoomEnabled: true,
+              height: !zoom ? 90 : 130,
+              axisX: {
+                valueFormatString: " MMM DD YYYY", // MMM DD YYYY
+                crosshair: {
+                  enabled: true,
+                  snapToDataPoint: true,
+                  valueFormatString: " MMM DD YYYY", // MMM DD YYYY
+                },
+              },
+              axisY: {
+                title: "Dom",
+                prefix: "",
+                crosshair: {
+                  enabled: true,
+                  snapToDataPoint: true,
+                  valueFormatString: handleFormatCoinPriceChart(
+                    dataPoints[0]?.y || 0
+                  ),
+                },
+                // tickLength: 0,
+              },
+              toolTip: {
+                shared: true,
+              },
+              data: [
+                {
+                  name: "DOM",
+                  color: "#767777",
+                  yValueFormatString: handleFormatCoinPriceChart(
+                    dataPoints[0]?.y || 0
+                  ),
+                  xValueFormatString: "DD/MM/YYYY HH:MM:ss", // MMM DD YYYY
+                  type: "column",
+                  dataPoints: title.vol ? dataPoints : [],
+                  toolTipContent:
+                    '<p style="font-size:0.75rem;color:#000000;margin:0;padding:0;">{x}</p><div style="display:flex;justify-content:flex-start;align-items:center;margin-top:0.25rem;"><span style="width:0.8rem;height:0.8rem;border-radius:50%;margin:0;padding:0;background-color:#767777;"></span><span style="margin-left:0.25rem;">Dom: </span><b>{y}</b></div>',
+                  // '<p style="width:2.5rem;height:2.5rem;background-color:red;" ></p><span style="color:#57B4E9">{x}</span><br/>PRICE: <b>{y}</b>',
+                },
+              ],
+            },
+          ]
+        : title.marketCap && !title.vol
+        ? [
+            {
+              zoomEnabled: true,
+              axisX: {
+                // title: "Bounce Rate",
+                valueFormatString: " MMM DD YYYY", // MMM DD YYYY
+                crosshair: {
+                  enabled: true,
+                  snapToDataPoint: true,
+                  valueFormatString: " MMM DD YYYY", // MMM DD YYYY
+                },
+                // lineThickness: 5,
+                // tickLength: 0,
+                // labelFormatter: function (e) {
+                //   return "123";
+                // },
+              },
+              // legend: {
+              //   verticalAlign: "top",
+              // },
+              // legend: {
+              //   verticalAlign: "top",
+              //   cursor: "pointer",
+              //   itemclick: function (e) {
+              //     if (
+              //       typeof e.dataSeries.visible === "undefined" ||
+              //       e.dataSeries.visible
+              //     ) {
+              //       e.dataSeries.visible = false;
+              //     } else {
+              //       e.dataSeries.visible = true;
+              //     }
+              //     e.chart.render();
+              //   },
+              // },
+              axisY: {
+                title: "Price",
+                prefix: "", // $
+                crosshair: {
+                  enabled: true,
+                  snapToDataPoint: true,
+                  valueFormatString: handleFormatCoinPriceChart(
+                    dataPoints[0]?.y || 0
+                  ),
+                },
+              },
+              toolTip: {
+                shared: true,
+              },
+              data: [
+                {
+                  // axisYType: "secondary",
+                  // toolTipContent: "Week {x}: {y}%",
+                  name: "PRICE",
+                  // type: "splineArea",
+                  // type: "area",
+                  type: "spline",
+                  // showInLegend: true,
+                  // legendText: "MWp = one megawatt peak",
+                  color: "#57B4E9",
+                  yValueFormatString: handleFormatCoinPriceChart(
+                    dataPoints[0]?.y || 0
+                  ), // "#,###.##"
+                  xValueFormatString: "DD/MM/YYYY HH:MM:ss", // MMM DD YYYY
+                  // xValueType: "dateTime",
+                  dataPoints: dataPoints,
+                  toolTipContent:
+                    '<p style="font-size:0.75rem;color:#000000;margin:0;padding:0;">{x}</p><div style="display:flex;justify-content:flex-start;align-items:center;margin-top:0.25rem;"><span style="width:0.8rem;height:0.8rem;border-radius:50%;margin:0;padding:0;background-color:#57B4E9;"></span><span style="margin-left:0.25rem;">Price: </span><b>{y}</b></div>',
+                  // '<p style="width:2.5rem;height:2.5rem;background-color:red;" ></p><span style="color:#57B4E9">{x}</span><br/>PRICE: <b>{y}</b>',
+                },
+              ],
+            },
+          ]
+        : !title.marketCap && title.vol
+        ? [
+            {
+              // zoomEnabled: true,
+              height: !zoom ? 90 : 130,
+              axisX: {
+                valueFormatString: " MMM DD YYYY", // MMM DD YYYY
+                crosshair: {
+                  enabled: true,
+                  snapToDataPoint: true,
+                  valueFormatString: " MMM DD YYYY", // MMM DD YYYY
+                },
+              },
+              axisY: {
+                title: "Dom",
+                prefix: "",
+                crosshair: {
+                  enabled: true,
+                  snapToDataPoint: true,
+                  valueFormatString: handleFormatCoinPriceChart(
+                    dataPoints[0]?.y || 0
+                  ),
+                },
+                // tickLength: 0,
+              },
+              toolTip: {
+                shared: true,
+              },
+              data: [
+                {
+                  name: "DOM",
+                  color: "#767777",
+                  yValueFormatString: handleFormatCoinPriceChart(
+                    dataPoints[0]?.y || 0
+                  ),
+                  xValueFormatString: "DD/MM/YYYY HH:MM:ss", // MMM DD YYYY
+                  type: "column",
+                  dataPoints: title.vol ? dataPoints : [],
+                  toolTipContent:
+                    '<p style="font-size:0.75rem;color:#000000;margin:0;padding:0;">{x}</p><div style="display:flex;justify-content:flex-start;align-items:center;margin-top:0.25rem;"><span style="width:0.8rem;height:0.8rem;border-radius:50%;margin:0;padding:0;background-color:#767777;"></span><span style="margin-left:0.25rem;">Dom: </span><b>{y}</b></div>',
+                  // '<p style="width:2.5rem;height:2.5rem;background-color:red;" ></p><span style="color:#57B4E9">{x}</span><br/>PRICE: <b>{y}</b>',
+                },
+              ],
+            },
+          ]
+        : [],
     rangeSelector: {
       // inputFields: {
       //   startValue: 1000,
@@ -760,13 +900,13 @@ const Coins = () => {
           // xValueFormatString: "DD/MM/YYYY", // MMM DD YYYY
         },
       ],
-      slider: {
-        minimum: new Date("2016-05-01"),
-        maximum: new Date("2018-07-01"),
-      },
+      // slider: {
+      //   minimum: new Date("01-01-2016"),
+      //   maximum: new Date("01-01-2018"),
+      // },
       axisX: {
         labelFontWeight: "bolder",
-        valueFormatString: "DD/MM/YYYY", // MMM DD YYYY
+        valueFormatString: "YYYY", // MMM DD YYYY
         labelFontColor: "#999999",
       },
     },
@@ -832,7 +972,19 @@ const Coins = () => {
               </div>
               <CanvasJSStockChart
                 containerProps={{
-                  height: !zoom ? "450px" : "625px",
+                  height: !zoom
+                    ? (title.marketCap && title.vol) ||
+                      (title.marketCap && !title.vol)
+                      ? "450px"
+                      : !title.marketCap && title.vol
+                      ? "150px"
+                      : "75px"
+                    : (title.marketCap && title.vol) ||
+                      (title.marketCap && !title.vol)
+                    ? "625px"
+                    : !title.marketCap && title.vol
+                    ? "215px"
+                    : "75px",
                   margin: "auto",
                 }}
                 options={options}
