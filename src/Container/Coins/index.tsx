@@ -478,10 +478,7 @@ const Coins = () => {
   // const handleCloseDrawer = (status: boolean) => setOpenWatchList(status);
   // const handleCloseDrawer = () => {};
   const ref: any = createRef();
-  const [
-    // image,
-    takeScreenShot,
-  ] = useScreenshot({
+  const [image, takeScreenShot] = useScreenshot({
     type: "image/jpeg",
     quality: 1.0,
   });
