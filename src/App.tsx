@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import * as yup from "yup";
 import numeral from "numeral";
-import SelectComponent from "./Components/Select";
 import { Status, TimeFilters } from "./Constants/enum";
 import { deleteUrl, getQueryParam, updateUrl } from "./Utils/query";
 import coinApi from "./Api/coinApi";
@@ -312,7 +311,7 @@ function App() {
               />
             </Col>
           </Row>
-          <Row className={styles.container__item}>
+          {/* <Row className={styles.container__item}>
             <Col xs={24} sm={24} md={2} lg={2} xl={2}>
               <h3>Time range: </h3>
             </Col>
@@ -323,7 +322,7 @@ function App() {
                 placeholder="Select time range"
               />
             </Col>
-          </Row>
+          </Row> */}
           <Row className={styles.container__item}>
             <Col xs={24} sm={24} md={24} lg={2} xl={2}></Col>
             <Col xs={24} sm={22} md={22} lg={22} xl={22}>
@@ -345,7 +344,6 @@ function App() {
                   <Link
                     to={{
                       pathname: `/coins/${objectCoin["coinFrom"]}/${objectCoin["coinTo"]}`,
-                      search: `?range=${queryParam["range"]}`,
                     }}
                   >
                     Generated Link

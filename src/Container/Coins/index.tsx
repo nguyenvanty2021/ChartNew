@@ -1,5 +1,5 @@
 // import { HeartFilled, HeartOutlined } from "@ant-design/icons";
-import { DatePicker, Dropdown, MenuProps } from "antd";
+import { Dropdown, MenuProps } from "antd";
 import expand from "./../../Assets/img/expand.png";
 import noExpand from "./../../Assets/img/noExpand.png";
 import { useReactToPrint } from "react-to-print";
@@ -18,28 +18,24 @@ import coinApi from "../../Api/coinApi";
 import {
   // DrawerComponent,
   handleFormatCoinPrice,
-  listTimeRange,
   ListWatchedProps,
   notifyTime,
   TimePeriod,
 } from "../../App";
 import { Status, TimeFilters } from "../../Constants/enum";
 import { createChart, ColorType } from "lightweight-charts";
-import { getQueryParam, updateUrl } from "../../Utils/query";
+import { getQueryParam } from "../../Utils/query";
 import Loading from "../../Components/Loading";
 import { useParams } from "react-router-dom";
 import { notify } from "../../Utils/notification";
 import numeral from "numeral";
 import moment from "moment";
-import SecondaryChart from "../../Components/SecondaryChart";
-import useWindowDimensions from "../../hooks/useWindowDimensions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import CanvasJSReact from "./../../Assets/canvasjs.stock.react";
-var CanvasJSStockChart = CanvasJSReact.CanvasJSStockChart;
+const CanvasJSStockChart = CanvasJSReact.CanvasJSStockChart;
 const formatDateNormal = "DD/MM/YYYY";
-const { RangePicker } = DatePicker;
 const handleFormatCoin = (coin: number) => {
   return coin < 0.01
     ? 0.000001
@@ -65,91 +61,6 @@ export function debounce(fn: any, wait?: number) {
 }
 const formatDate = (time: number, type: string) =>
   moment.unix(time).format(type);
-const RangePickerComp = ({
-  listChartModal,
-  setStatusClearDate,
-  setListChartModal,
-}: {
-  listChartModal: any[];
-  setStatusClearDate: any;
-  setListChartModal: any;
-}) => {
-  const [dateCommon, setDateCommon] = useState({
-    start: listChartModal[0].time,
-    end: listChartModal[listChartModal?.length - 1].time,
-  });
-  // const formatFunc = (date: any) =>
-  //   moment(date.split("/").reverse().join("-")).format("ll");
-  const onChange = (value: any) => {
-    if (value?.length > 0) {
-      const today = new Date(value[1]);
-      const tomorrow = new Date(today);
-      const start: number = moment(new Date(value[0])).unix();
-      const end: number = moment(
-        new Date(tomorrow.setDate(today.getDate() + 1))
-      ).unix();
-      // setDateCommon({
-      //   ...dateCommon,
-      //   start,
-      //   end,
-      // });
-      const listTemp = [...listChartModal];
-      const resultFilter = listTemp.filter(
-        (v) => v.time >= start && v.time <= end
-      );
-      resultFilter.length > 0 && setListChartModal([...resultFilter]);
-    } else {
-      setStatusClearDate(true);
-    }
-  };
-  useEffect(() => {
-    setDateCommon({
-      ...dateCommon,
-      start: listChartModal[0].time,
-      end: listChartModal[listChartModal?.length - 1].time,
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [listChartModal]);
-
-  return (
-    <RangePicker
-      onChange={onChange}
-      className={styles.title__child__datepicker}
-      suffixIcon={null}
-      disabledDate={(current: any) => {
-        return (
-          dateCommon.start >= moment(new Date(current)).unix() ||
-          dateCommon.end <= moment(new Date(current)).unix()
-        );
-      }}
-      // dateRender={(current: any) => {
-      //   const style: React.CSSProperties = {};
-      //   if (
-      //     dateCommon.start < moment(new Date(current)).unix() &&
-      //     dateCommon.end > moment(new Date(current)).unix()
-      //   ) {
-      //     style.border = "1px solid #1890ff";
-      //     style.borderRadius = "50%";
-      //   }
-      //   return (
-      //     <div className="ant-picker-cell-inner" style={style}>
-      //       {current.date()}
-      //     </div>
-      //   );
-      // }}
-      value={[
-        moment(
-          formatDate(dateCommon.start, formatDateNormal),
-          formatDateNormal
-        ),
-        moment(formatDate(dateCommon.end, formatDateNormal), formatDateNormal),
-      ]}
-      format={formatDateNormal}
-      bordered={false}
-    />
-  );
-};
-const RangePickerCompHOC = memo(RangePickerComp);
 const ChartComponent = (props: any) => {
   const { data, range, heightDefault, title, type } = props;
   const colors: any = {
@@ -380,18 +291,13 @@ const ChartComponent = (props: any) => {
 };
 export const ChartComponentHOC = memo(ChartComponent);
 const Coins = () => {
-  const [boxWidth, setBoxWidth] = useState<number>(0);
   const [statusClearDate, setStatusClearDate] = useState<boolean>(false);
   const params = useParams();
   // const [openWatchList, setOpenWatchList] = useState<boolean>(false);
   // const [indexClicked, setIndexClicked] = useState<number>(0);
   const [indexScale, setIndexScale] = useState<number>(0);
   const listScale = ["Linear Scale", "Log Scale"];
-  const [zoom, setZoom] = useState({
-    status: false,
-    heightDefault: 300,
-  });
-  const { height } = useWindowDimensions();
+  const [zoom, setZoom] = useState<boolean>(false);
   const { from, to }: any = params;
   const [dataPoints, setDataPoints] = useState<
     {
@@ -414,16 +320,10 @@ const Coins = () => {
   // const [statusHeart, setStatusHeart] = useState<boolean>(
   //   indexHeart > -1 ? listWatchedState[indexHeart].watched : false
   // );
-  const containerProps = {
-    width: "100%",
-    height: "450px",
-    margin: "auto",
-  };
   const [listChartModal, setListChartModal] = useState<any[]>([]);
   const indexRange = Object.keys(TimePeriod).findIndex(
     (values) => values === queryParam["range"]
   );
-  const [secondList, setSecondList] = useState<any>([]);
   const gridItemRef: any = useRef<HTMLDivElement>(null);
   const [title, setTitle] = useState({
     marketCap: true,
@@ -432,7 +332,7 @@ const Coins = () => {
   const [loading, setLoading] = useState<boolean>(false);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleCoupleCoin = useCallback(
-    debounce(async (range: string) => {
+    debounce(async () => {
       try {
         const listRespon = await Promise.all([
           coinApi.getAllCoinCouple(from.toLowerCase(), TimeFilters.ALL),
@@ -453,7 +353,7 @@ const Coins = () => {
             );
             result.push(listCoinFrom[listCoinFrom.length - 1]);
             result.shift();
-            const listSecondTemp: any = [];
+
             const listTemp: any = [];
             const listDataPoint: any = [];
             result?.forEach((v: any, index: number) => {
@@ -462,17 +362,13 @@ const Coins = () => {
                 value:
                   parseFloat(v?.[1]) / parseFloat(listCoinTo?.[index]?.[1]),
               });
-              listSecondTemp.push({
-                date: new Date(v?.[0]),
-                price:
-                  parseFloat(v?.[1]) / parseFloat(listCoinTo?.[index]?.[1]),
-              });
+
               listDataPoint.push({
                 x: new Date(v?.[0]),
                 y: parseFloat(v?.[1]) / parseFloat(listCoinTo?.[index]?.[1]),
               });
             });
-            setSecondList([...listSecondTemp]);
+
             setListChartModal([...listTemp]);
             setDataPoints([...listDataPoint]);
             handleSetLocalStorage();
@@ -483,7 +379,7 @@ const Coins = () => {
             );
             result.push(listCoinTo[listCoinTo.length - 1]);
             result.shift();
-            const listSecondTemp: any = [];
+
             const listDataPoint: any = [];
             const listTemp: any = [];
             listCoinFrom?.forEach((v: any, index: number) => {
@@ -491,40 +387,33 @@ const Coins = () => {
                 time: moment(v?.[0]).unix(),
                 value: parseFloat(v?.[1]) / parseFloat(result?.[index]?.[1]),
               });
-              listSecondTemp.push({
-                date: new Date(v?.[0]),
-                price: parseFloat(v?.[1]) / parseFloat(result?.[index]?.[1]),
-              });
+
               listDataPoint.push({
                 x: new Date(v?.[0]),
                 y: parseFloat(v?.[1]) / parseFloat(result?.[index]?.[1]),
               });
             });
-            setSecondList([...listSecondTemp]);
+
             setListChartModal([...listTemp]);
             setDataPoints([...listDataPoint]);
             handleSetLocalStorage();
           } else {
             const listTemp: any = [];
             const listDataPoint: any = [];
-            const listSecondTemp: any = [];
+
             listCoinFrom?.forEach((v: any, index: number) => {
               listTemp.push({
                 time: moment(v?.[0]).unix(),
                 value:
                   parseFloat(v?.[1]) / parseFloat(listCoinTo?.[index]?.[1]),
               });
-              listSecondTemp.push({
-                date: new Date(v?.[0]),
-                price:
-                  parseFloat(v?.[1]) / parseFloat(listCoinTo?.[index]?.[1]),
-              });
+
               listDataPoint.push({
                 x: new Date(v?.[0]),
                 y: parseFloat(v?.[1]) / parseFloat(listCoinTo?.[index]?.[1]),
               });
             });
-            setSecondList([...listSecondTemp]);
+
             setListChartModal([...listTemp]);
             setDataPoints([...listDataPoint]);
             handleSetLocalStorage();
@@ -589,7 +478,10 @@ const Coins = () => {
   // const handleCloseDrawer = (status: boolean) => setOpenWatchList(status);
   // const handleCloseDrawer = () => {};
   const ref: any = createRef();
-  const [image, takeScreenShot] = useScreenshot({
+  const [
+    // image,
+    takeScreenShot,
+  ] = useScreenshot({
     type: "image/jpeg",
     quality: 1.0,
   });
@@ -631,13 +523,7 @@ const Coins = () => {
         //   {/* {doc.querySelector("#pdf")} */}
         //   content
         // </PrintComponents>
-        <p
-          onClick={async () => {
-            await handlePrint();
-            await setCheckClickedSelect(!checkClickedSelect);
-          }}
-          className={styles.px}
-        >
+        <p onClick={() => handlePrint()} className={styles.px}>
           Print chart
         </p>
       ),
@@ -648,13 +534,7 @@ const Coins = () => {
     },
     {
       label: (
-        <p
-          onClick={async () => {
-            await downloadScreenshot("png");
-            await setCheckClickedSelect(!checkClickedSelect);
-          }}
-          className={styles.px}
-        >
+        <p onClick={() => downloadScreenshot("png")} className={styles.px}>
           Download PNG image
         </p>
       ),
@@ -662,13 +542,7 @@ const Coins = () => {
     },
     {
       label: (
-        <p
-          onClick={async () => {
-            await downloadScreenshot("jpeg");
-            await setCheckClickedSelect(!checkClickedSelect);
-          }}
-          className={styles.px}
-        >
+        <p onClick={() => downloadScreenshot("jpeg")} className={styles.px}>
           Download JPEG image
         </p>
       ),
@@ -676,13 +550,7 @@ const Coins = () => {
     },
     {
       label: (
-        <p
-          onClick={async () => {
-            await createPDF();
-            await setCheckClickedSelect(!checkClickedSelect);
-          }}
-          className={styles.px}
-        >
+        <p onClick={() => createPDF()} className={styles.px}>
           Download PDF document
         </p>
       ),
@@ -690,13 +558,7 @@ const Coins = () => {
     },
     {
       label: (
-        <p
-          onClick={async () => {
-            await downloadScreenshot("svg");
-            await setCheckClickedSelect(!checkClickedSelect);
-          }}
-          className={styles.px}
-        >
+        <p onClick={() => downloadScreenshot("svg")} className={styles.px}>
           Download SVG vector image
         </p>
       ),
@@ -786,7 +648,7 @@ const Coins = () => {
       },
       {
         // zoomEnabled: true,
-        height: 100,
+        height: !zoom ? 90 : 130,
         axisX: {
           valueFormatString: "DD/MM/YYYY", // MMM DD YYYY
           crosshair: {
@@ -873,6 +735,7 @@ const Coins = () => {
     },
     navigator: {
       dynamicUpdate: true,
+      height: 35,
       data: [
         {
           type: "spline",
@@ -905,62 +768,17 @@ const Coins = () => {
     setStatusClearDate(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [statusClearDate]);
-  useEffect(() => {
-    const handleResize = (width?: number) => {
-      setBoxWidth(width || 0);
-    };
-    handleResize(gridItemRef.current?.clientWidth || 0);
-    window.addEventListener("resize", () =>
-      handleResize(gridItemRef?.current?.clientWidth || 0)
-    );
-    return () => {
-      window.removeEventListener("resize", () => handleResize());
-    };
-  }, [gridItemRef]);
   return (
     <div className={styles.coins} ref={gridItemRef}>
       {loading && <Loading />}
       {listChartModal?.length > 0 && (
         <div>
           <div>
-            {!zoom.status && (
+            {!zoom && (
               <h3 className={styles.new}>Total Cryptocurrency Price</h3>
             )}
             <div id="pdf" ref={ref}>
               <div className={styles.title}>
-                {/* <div className={styles.title__child}>
-                  <p className={styles.title__child__zoom}>Zoom</p>
-                  <div className={styles.title__child__range}>
-                    {listTimeRange.map((v, index) => (
-                      <p
-                        key={index}
-                        onClick={() => {
-                          const indexRange = Object.values(
-                            TimePeriod
-                          ).findIndex((values) => values === v.value);
-                          updateUrl(
-                            "range",
-                            indexRange > -1
-                              ? Object.keys(TimePeriod)[indexRange]
-                              : "1D"
-                          );
-                          setLoading(true);
-                          // setIndexClicked(index);
-                          handleCoupleCoin(
-                            Object.values(TimePeriod)[indexRange]
-                          );
-                        }}
-                        className={`${styles.title__child__range__item} ${
-                          indexRange === index
-                            ? styles.title__child__range__itemClicked
-                            : ""
-                        }`}
-                      >
-                        {v.key}
-                      </p>
-                    ))}
-                  </div>
-                </div> */}
                 <div
                   className={`${styles.title__child} ${styles.title__child__right}`}
                 >
@@ -982,26 +800,14 @@ const Coins = () => {
                     ))}
                     <div className={styles.title__child__rangeIcon}>
                       <img
-                        src={!zoom.status ? expand : noExpand}
-                        onClick={() =>
-                          setZoom({
-                            ...zoom,
-                            status: !zoom.status,
-                            heightDefault: !zoom.status ? 500 : 300,
-                          })
-                        }
+                        src={!zoom ? expand : noExpand}
+                        onClick={() => setZoom(!zoom)}
                         alt=""
                         className={styles.title__child__rangeIcon__item}
                       />
                     </div>
                     <div className={styles.title__child__rangeIcon}>
-                      <Dropdown
-                        onOpenChange={() =>
-                          setCheckClickedSelect(!checkClickedSelect)
-                        }
-                        menu={{ items }}
-                        trigger={["click"]}
-                      >
+                      <Dropdown menu={{ items }} trigger={["click"]}>
                         <FontAwesomeIcon
                           className={styles.title__child__rangeIcon__item}
                           icon={faBars}
@@ -1009,76 +815,13 @@ const Coins = () => {
                       </Dropdown>
                     </div>
                   </div>
-                  {/* <div>
-                    <RangePickerCompHOC
-                      setStatusClearDate={setStatusClearDate}
-                      setListChartModal={setListChartModal}
-                      listChartModal={listChartModal}
-                    />
-                  </div> */}
                 </div>
               </div>
-              {/* <div className={styles.chartLightweight}>
-                {!checkClickedSelect && (
-                  <div
-                    className={`${styles.chartLightweight__title} ${
-                      !zoom.status
-                        ? styles.chartLightweight__titleHeight300
-                        : styles.chartLightweight__titleHeight550
-                    }`}
-                  >
-                    <h3
-                      className={
-                        title.vol ? styles.titleShow : styles.titleHidden
-                      }
-                    >
-                      <b>DOM</b>
-                    </h3>
-                    <h3
-                      className={`${styles.chartLightweight__title__market} ${
-                        title.marketCap ? styles.titleShow : styles.titleHidden
-                      }`}
-                    >
-                      <b>PRICE</b>
-                    </h3>
-                  </div>
-                )}
-
-                <div className={styles.coupleChart}>
-                  <ChartComponentHOC
-                    type="above"
-                    from={from}
-                    to={to}
-                    title={title}
-                    heightDefault={zoom.heightDefault}
-                    range={queryParam["range"]}
-                    data={listChartModal?.length > 0 ? listChartModal : []}
-                  />
-                  <ChartComponentHOC
-                    type="bottom"
-                    from={from}
-                    to={to}
-                    title={title}
-                    heightDefault={zoom.heightDefault}
-                    range={queryParam["range"]}
-                    data={listChartModal?.length > 0 ? listChartModal : []}
-                  />
-                </div>
-              </div> */}
-              {/* <SecondaryChart
-                data={secondList?.length > 0 ? secondList : []}
-                height={Math.floor(height * 0.05)}
-                width={boxWidth}
-                setListChartModal={setListChartModal}
-                margin={{
-                  top: 0,
-                  right: 0,
-                  bottom: 0,
-                  left: 0,
-                }}
-              /> */}
               <CanvasJSStockChart
-                containerProps={containerProps}
+                containerProps={{
+                  height: !zoom ? "450px" : "625px",
+                  margin: "auto",
+                }}
                 options={options}
                 /* onRef = {ref => this.chart = ref} */
               />
@@ -1110,68 +853,6 @@ const Coins = () => {
               </div>
             </div>
           </div>
-          {/* <div className={styles.range}>
-            <Radio.Group
-              className={styles.range__btn}
-              onChange={(e) => {
-                const { value } = e.target;
-                const indexRange = Object.values(TimePeriod).findIndex(
-                  (values) => values === value
-                );
-                updateUrl(
-                  "range",
-                  indexRange > -1 ? Object.keys(TimePeriod)[indexRange] : "1D"
-                );
-                setLoading(true);
-                handleCoupleCoin(Object.values(TimePeriod)[indexRange]);
-              }}
-              defaultValue={
-                indexRange > -1 ? Object.values(TimePeriod)[indexRange] : "1"
-              }
-              buttonStyle="solid"
-            >
-              {listTimeRange?.length > 0 &&
-                listTimeRange.map((values) => {
-                  return (
-                    <Radio.Button key={values.id} value={values.value}>
-                      {values.key}
-                    </Radio.Button>
-                  );
-                })}
-            </Radio.Group>
-          </div> */}
-          {/* <div className={styles.coins__title}>
-            <h3>
-              <b style={{ marginRight: "0.35rem" }}>
-                {from && to && `${from.toUpperCase()} to ${to.toUpperCase()}`}
-              </b>
-              Pair Chart
-            </h3>
-            {statusHeart ? (
-              <HeartFilled
-                onClick={handleUpdateStatusHeart}
-                className={styles.chart__heart}
-              />
-            ) : (
-              <HeartOutlined
-                onClick={handleUpdateStatusHeart}
-                className={styles.chart__heart}
-              />
-            )}
-          </div> */}
-          {/* <h3 className={styles.title}>My Watchlist</h3>
-          <DrawerComponent
-            coinCurrent={
-              from && to && `${from.toUpperCase()}/${to.toUpperCase()}`
-            }
-            priceCurrent={
-              listChartModal?.length > 0
-                ? listChartModal[listChartModal.length - 1].value
-                : 0
-            }
-            handleCloseDrawer={handleCloseDrawer}
-            list={listWatchedState}
-          /> */}
         </div>
       )}
     </div>
