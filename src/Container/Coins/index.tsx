@@ -591,6 +591,7 @@ const Coins = () => {
         ? [
             {
               zoomEnabled: true,
+
               axisX: {
                 // title: "Bounce Rate",
                 valueFormatString: " MMM DD YYYY", // MMM DD YYYY
@@ -625,6 +626,11 @@ const Coins = () => {
               // },
               axisY: {
                 title: "Price",
+                titleFontWeight: "bold",
+                titleFontColor: "#57B4E9",
+                labelFontColor: "#57B4E9",
+                labelFontWeight: "bold",
+
                 prefix: "", // $
                 crosshair: {
                   enabled: true,
@@ -673,6 +679,11 @@ const Coins = () => {
               },
               axisY: {
                 title: "Dom",
+                titleFontWeight: "bold",
+                titleFontSize: 14,
+                titleFontColor: "#767777",
+                labelFontColor: "#767777",
+                labelFontWeight: "bold",
                 prefix: "",
                 crosshair: {
                   enabled: true,
