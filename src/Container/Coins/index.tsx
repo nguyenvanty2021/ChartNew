@@ -706,28 +706,43 @@ const Coins = () => {
       //     rangeType: "all",
       //   },
       // ],
-      // buttons: [
-      //   {
-      //     label: "1M",
-      //     range: 1,
-      //     rangeType: "month",
-      //   },
-      //   {
-      //     label: "3M",
-      //     range: 3,
-      //     rangeType: "month",
-      //   },
-      //   {
-      //     label: "1Y",
-      //     range: 1,
-      //     rangeType: "year",
-      //   },
-      //   {
-      //     label: "All",
-      //     // range: null,
-      //     rangeType: "all",
-      //   },
-      // ],
+      buttons: [
+        {
+          label: "1d",
+          range: 1,
+          rangeType: "day",
+        },
+        {
+          label: "7d",
+          range: 7,
+          rangeType: "day",
+        },
+        {
+          label: "1m",
+          range: 1,
+          rangeType: "month",
+        },
+        {
+          label: "3m",
+          range: 3,
+          rangeType: "month",
+        },
+        {
+          label: "1y",
+          range: 1,
+          rangeType: "year",
+        },
+        {
+          label: "YTD",
+          // range: 1,
+          rangeType: "ytd",
+        },
+        {
+          label: "All",
+          // range: null,
+          rangeType: "all",
+        },
+      ],
       // enabled: false,
     },
     navigator: {
