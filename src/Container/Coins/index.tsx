@@ -847,6 +847,16 @@ const Coins = () => {
       //     rangeType: "all",
       //   },
       // ],
+      buttonStyle: {
+        backgroundColor: "#F7F7F7",
+        borderColor: "#F7F7F7",
+      },
+      inputFields: {
+        style: {
+          cursor: "pointer",
+          borderColor: "white",
+        },
+      },
       buttons: [
         {
           label: "1d",
@@ -889,6 +899,10 @@ const Coins = () => {
     navigator: {
       dynamicUpdate: true,
       height: 35,
+      slider: {
+        maskInverted: true, // Change it to false
+        maskColor: "#D9E0EF",
+      },
       data: [
         {
           type: "spline",
