@@ -583,6 +583,9 @@ const Coins = () => {
     // rangeChanged: function (e) {
     //   rangeChangedTriggered = true;
     // },
+    // rangeChanging: function (e) {
+    //   console.log("Source: " + e.stockChart);
+    // },
     charts:
       title.marketCap && title.vol
         ? [
@@ -821,6 +824,7 @@ const Coins = () => {
           ]
         : [],
     rangeSelector: {
+      // selectedRangeButtonIndex: 1,
       // inputFields: {
       //   startValue: 1000,
       //   endValue: 5000,
@@ -847,12 +851,18 @@ const Coins = () => {
       //     rangeType: "all",
       //   },
       // ],
+      selectedRangeButtonIndex: 6,
       buttonStyle: {
+        labelFontSize: 13,
         backgroundColor: "#F7F7F7",
         borderColor: "#F7F7F7",
+        backgroundColorOnHover: "#E6EBF5",
+        backgroundColorOnSelect: "#E6EBF5",
+        labelFontColorOnHover: "#000000",
       },
       inputFields: {
         style: {
+          fontSize: 13,
           cursor: "pointer",
           borderColor: "white",
         },
@@ -889,7 +899,7 @@ const Coins = () => {
           rangeType: "ytd",
         },
         {
-          label: "All",
+          label: "ALL",
           // range: null,
           rangeType: "all",
         },
