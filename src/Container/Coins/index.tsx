@@ -613,7 +613,7 @@ const Coins = () => {
         //   },
         // },
         axisY: {
-          title: "PRICE",
+          title: "Price",
           prefix: "", // $
           crosshair: {
             enabled: true,
@@ -638,8 +638,9 @@ const Coins = () => {
             yValueFormatString: "#,###.##",
             xValueFormatString: "DD/MM/YYYY HH:MM:ss", // MMM DD YYYY
             dataPoints: dataPoints,
-            // toolTipContent:
-            //   '<span style="color:#4F81BC">Year: {x}</span><br/>Min: {y[0]}°C,<br/> Max: {y[1]}°C',
+            toolTipContent:
+              '<p style="font-size:0.75rem;color:#000000;margin:0;padding:0;">{x}</p><div style="display:flex;justify-content:flex-start;align-items:center;margin-top:0.25rem;"><span style="width:0.8rem;height:0.8rem;border-radius:50%;margin:0;padding:0;background-color:#57B4E9;"></span><span style="margin-left:0.25rem;">Price: </span><b>{y}</b></div>',
+            // '<p style="width:2.5rem;height:2.5rem;background-color:red;" ></p><span style="color:#57B4E9">{x}</span><br/>PRICE: <b>{y}</b>',
           },
         ],
       },
