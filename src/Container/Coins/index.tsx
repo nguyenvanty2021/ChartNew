@@ -586,12 +586,14 @@ const Coins = () => {
     // rangeChanging: function (e) {
     //   console.log("Source: " + e.stockChart);
     // },
+    // rangeChanged: function (e) {
+    //   console.log("type : " + e.type + ", trigger : " + e.trigger);
+    // },
     charts:
       title.marketCap && title.vol
         ? [
             {
               zoomEnabled: true,
-
               axisX: {
                 // title: "Bounce Rate",
                 valueFormatString: " MMM DD YYYY", // MMM DD YYYY
@@ -630,7 +632,6 @@ const Coins = () => {
                 titleFontColor: "#57B4E9",
                 labelFontColor: "#57B4E9",
                 labelFontWeight: "bold",
-
                 prefix: "", // $
                 crosshair: {
                   enabled: true,
@@ -647,6 +648,8 @@ const Coins = () => {
                 {
                   // axisYType: "secondary",
                   // toolTipContent: "Week {x}: {y}%",
+                  lineColor: "#57B4E9",
+                  // markerSize: 10,
                   name: "PRICE",
                   // type: "splineArea",
                   // type: "area",
