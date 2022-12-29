@@ -35,6 +35,8 @@ import CanvasJSReact from "./../../Assets/canvasjs.stock.react";
 import Highcharts from "highcharts/highstock";
 import HighchartsReact from "highcharts-react-official";
 import dataJson from "./../../Api/market_dominance_data.json";
+import exporting from "highcharts/modules/exporting.js";
+exporting(Highcharts);
 const CanvasJSStockChart = CanvasJSReact.CanvasJSStockChart;
 const formatDateNormal = "DD/MM/YYYY";
 const handleFormatCoin = (coin: number) => {
@@ -1009,6 +1011,7 @@ const Coins = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [statusClearDate]);
   const [test1, setTest1] = useState<any>(dataJson[0].data);
+
   const option1 = {
     // title: {
     //   text: "Total Cryptocurrency Price",
@@ -1041,7 +1044,6 @@ const Coins = () => {
     //     }
     //   }
     // },
-
     tooltip: {
       // pointFormat:
       //   '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>',
@@ -1256,6 +1258,13 @@ const Coins = () => {
         yAxis: 1,
       },
     ],
+    exporting: {
+      chartOptions: {
+        title: {
+          text: "export title",
+        },
+      },
+    },
     // navigator: {
     //   // maskFill: "#D9E0EF",
     //   // outlineColor: "red",
@@ -1300,6 +1309,7 @@ const Coins = () => {
   //       setTest1([...volume]);
   //     });
   // }, []);
+
   return (
     <div className={styles.coins} ref={gridItemRef}>
       {loading && <Loading />}
@@ -1338,14 +1348,14 @@ const Coins = () => {
                         className={styles.title__child__rangeIcon__item}
                       />
                     </div>
-                    <div className={styles.title__child__rangeIcon}>
+                    {/* <div className={styles.title__child__rangeIcon}>
                       <Dropdown menu={{ items }} trigger={["click"]}>
                         <FontAwesomeIcon
                           className={styles.title__child__rangeIcon__item}
                           icon={faBars}
                         />
                       </Dropdown>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>
@@ -1396,12 +1406,12 @@ const Coins = () => {
                 </div>
               </div> */}
               <HighchartsReact
-                id="pdf"
                 highcharts={Highcharts}
                 constructorType={"stockChart"}
                 options={option1}
                 // allowChartUpdate={true}
                 // immutable={false}
+                // @ts-ignore: Unreachable code error
               />
             </div>
           </div>
