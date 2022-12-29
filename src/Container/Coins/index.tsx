@@ -32,6 +32,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import CanvasJSReact from "./../../Assets/canvasjs.stock.react";
+import Highcharts from "highcharts/highstock";
+import HighchartsReact from "highcharts-react-official";
+import dataJson from "./../../Api/market_dominance_data.json";
 const CanvasJSStockChart = CanvasJSReact.CanvasJSStockChart;
 const formatDateNormal = "DD/MM/YYYY";
 const handleFormatCoin = (coin: number) => {
@@ -335,6 +338,7 @@ const Coins = () => {
     marketCap: true,
     vol: true,
   });
+  const [listDataChart, setListDataChart] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(false);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleCoupleCoin = useCallback(
@@ -359,7 +363,7 @@ const Coins = () => {
             );
             result.push(listCoinFrom[listCoinFrom.length - 1]);
             result.shift();
-
+            const listDataChartTemp: any = [];
             const listTemp: any = [];
             const listDataPoint: any = [];
             result?.forEach((v: any, index: number) => {
@@ -368,13 +372,16 @@ const Coins = () => {
                 value:
                   parseFloat(v?.[1]) / parseFloat(listCoinTo?.[index]?.[1]),
               });
-
+              listDataChartTemp.push([
+                parseFloat(`${moment(v?.[0]).unix()}000`),
+                parseFloat(v?.[1]) / parseFloat(listCoinTo?.[index]?.[1]),
+              ]);
               listDataPoint.push({
                 x: new Date(v?.[0]),
                 y: parseFloat(v?.[1]) / parseFloat(listCoinTo?.[index]?.[1]),
               });
             });
-
+            setListDataChart([...listDataChartTemp]);
             setListChartModal([...listTemp]);
             setDataPoints([...listDataPoint]);
             handleSetLocalStorage();
@@ -385,7 +392,7 @@ const Coins = () => {
             );
             result.push(listCoinTo[listCoinTo.length - 1]);
             result.shift();
-
+            const listDataChartTemp: any = [];
             const listDataPoint: any = [];
             const listTemp: any = [];
             listCoinFrom?.forEach((v: any, index: number) => {
@@ -393,33 +400,39 @@ const Coins = () => {
                 time: moment(v?.[0]).unix(),
                 value: parseFloat(v?.[1]) / parseFloat(result?.[index]?.[1]),
               });
-
+              listDataChartTemp.push([
+                parseFloat(`${moment(v?.[0]).unix()}000`),
+                parseFloat(v?.[1]) / parseFloat(result?.[index]?.[1]),
+              ]);
               listDataPoint.push({
                 x: new Date(v?.[0]),
                 y: parseFloat(v?.[1]) / parseFloat(result?.[index]?.[1]),
               });
             });
-
+            setListDataChart([...listDataChartTemp]);
             setListChartModal([...listTemp]);
             setDataPoints([...listDataPoint]);
             handleSetLocalStorage();
           } else {
             const listTemp: any = [];
             const listDataPoint: any = [];
-
+            const listDataChartTemp: any = [];
             listCoinFrom?.forEach((v: any, index: number) => {
               listTemp.push({
                 time: moment(v?.[0]).unix(),
                 value:
                   parseFloat(v?.[1]) / parseFloat(listCoinTo?.[index]?.[1]),
               });
-
+              listDataChartTemp.push([
+                parseFloat(`${moment(v?.[0]).unix()}000`),
+                parseFloat(v?.[1]) / parseFloat(listCoinTo?.[index]?.[1]),
+              ]);
               listDataPoint.push({
                 x: new Date(v?.[0]),
                 y: parseFloat(v?.[1]) / parseFloat(listCoinTo?.[index]?.[1]),
               });
             });
-
+            setListDataChart([...listDataChartTemp]);
             setListChartModal([...listTemp]);
             setDataPoints([...listDataPoint]);
             handleSetLocalStorage();
@@ -952,6 +965,42 @@ const Coins = () => {
     //   enabled: false,
     // },
   };
+  // useEffect(() => {
+  //   Highcharts.getJSON(
+  //     "https://cdn.jsdelivr.net/gh/highcharts/highcharts@v7.0.0/samples/data/range.json",
+  //     function (data) {
+  //       Highcharts.stockChart("container", {
+  //         chart: {
+  //           type: "arearange",
+  //         },
+
+  //         rangeSelector: {
+  //           allButtonsEnabled: true,
+  //           selected: 2,
+  //         },
+
+  //         title: {
+  //           text: "Temperature variation by day",
+  //         },
+
+  //         subtitle: {
+  //           text: 'Demo of all buttons enabled. Even though "YTD" and "1y" don\'t apply since we\'re<br>only showing values within one year, they are enabled to allow dynamic interaction',
+  //         },
+
+  //         tooltip: {
+  //           valueSuffix: "°C",
+  //         },
+
+  //         series: [
+  //           {
+  //             name: "Temperatures",
+  //             data: data,
+  //           },
+  //         ],
+  //       });
+  //     }
+  //   );
+  // }, []);
   useEffect(() => {
     setLoading(true);
     // handleCheckCoin();
@@ -959,6 +1008,244 @@ const Coins = () => {
     setStatusClearDate(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [statusClearDate]);
+  const [test1, setTest1] = useState<any>(dataJson[0].data);
+  const option1 = {
+    // title: {
+    //   text: "Total Cryptocurrency Price",
+    // },
+    // chart: {
+    //   type: "spline",
+    // },
+    // subtitle: {
+    //   text: "Demo of placing the range selector above the navigator",
+    // },
+    // rangeSelector: {
+    //   // floating: true,
+    //   // y: -65,
+    //   // verticalAlign: "bottom",
+    //   // allButtonsEnabled: false,
+    //   selected: 1,
+    // },
+    // tooltip: {
+    //   split: true,
+    // },
+    // tooltip: {
+    //   headerFormat: "<b>{series.name}</b><br/>",
+    //   pointFormat: "{point.x} km: {point.y}°C",
+    // },
+    // plotOptions: {
+    //   spline: {
+    //     marker: {
+    //       enable: false
+    //     }
+    //   }
+    // },
+    tooltip: {
+      pointFormat:
+        '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>',
+      valueDecimals:
+        test1[0][1] < 0.01
+          ? 7
+          : test1[0][1] < 0.1
+          ? 5
+          : test1[0][1] < 10
+          ? 3
+          : 3,
+      changeDecimals:
+        test1[0][1] < 0.01
+          ? 7
+          : test1[0][1] < 0.1
+          ? 5
+          : test1[0][1] < 10
+          ? 3
+          : 3,
+      split: false,
+      // style: {
+      //   width: "200px",
+      // },
+      shared: true,
+    },
+    // chart: {
+    //   events: {
+    //     load: function () {
+    //       const a: any = window;
+    //       if (!a.TestController) {
+    //         setTitle(null, {
+    //           text: "Built chart in " + (new Date() - start) + "ms",
+    //         });
+    //       }
+    //     },
+    //   },
+    //   zoomType: "x",
+    // },
+    chart: {
+      // type: "candlestick",
+      zoomType: "x",
+
+      height: 400,
+    },
+    // navigator: {
+    //   adaptToUpdatedData: false,
+    //   series: {
+    //     data: test,
+    //   },
+    // },
+    // scrollbar: {
+    //   liveRedraw: false,
+    // },
+    rangeSelector: {
+      // inputEnabled: false,
+      allButtonsEnabled: true,
+      selected: 6,
+      buttons: [
+        {
+          type: "day",
+          count: 1,
+          text: "1d",
+        },
+        {
+          type: "day",
+          count: 7,
+          text: "7d",
+        },
+        {
+          type: "month",
+          count: 1,
+          text: "1m",
+        },
+        {
+          type: "month",
+          count: 3,
+          text: "3m",
+        },
+        {
+          type: "year",
+          count: 1,
+          text: "1y",
+        },
+        {
+          type: "ytd",
+          // count: 1,
+          text: "YTD",
+        },
+        {
+          type: "all",
+          text: "ALL",
+        },
+      ],
+    },
+    legend: {
+      enabled: true,
+    },
+    yAxis: [
+      {
+        // reversed: true,
+        labels: {
+          align: "left",
+          x: 10,
+          // formatter: (value) => {
+          //   return console.log(value);
+          // },
+        },
+        plotLines: [
+          {
+            value: 0,
+            width: 2,
+            color: "silver",
+          },
+        ],
+        // showLastLabel: false,
+        title: {
+          enabled: true,
+          text: "Price",
+        },
+        height: "80%",
+        // lineWidth: 2,
+        resize: {
+          enabled: true,
+        },
+      },
+      {
+        labels: {
+          align: "left",
+          x: 10,
+        },
+        title: {
+          text: "Dom",
+        },
+        top: "80%",
+        height: "20%",
+        offset: 0,
+      },
+    ],
+    // exporting: {
+    //   enabled: true,
+    //   // allowHTML: true,
+    //   showTable: true,
+    // },
+
+    series: [
+      {
+        // threshold: null,
+        name: "Price",
+        // tooltip: {
+        //   valueDecimals: 2,
+        // },
+        id: "aapl-ohlc",
+        data: listDataChart?.length > 0 ? listDataChart : [],
+        // tooltip: {
+        //   valueDecimals: 1,
+        //   valueSuffix: '°C'
+        // },
+      },
+      {
+        type: "column",
+        id: "aapl-volume",
+        name: "Dom",
+        data: test1?.length > 0 ? test1 : [],
+        yAxis: 1,
+      },
+    ],
+    responsive: {
+      rules: [
+        {
+          condition: {
+            maxWidth: 800,
+          },
+          chartOptions: {
+            chart: {
+              height: 300,
+            },
+            navigator: {
+              enabled: true,
+            },
+
+            // rangeSelector: {
+            //   inputEnabled: false,
+            // },
+          },
+        },
+      ],
+    },
+  };
+  // useEffect(() => {
+  //   fetch(
+  //     "https://www.coingecko.com/global_charts/market_dominance_data?locale=en"
+  //   )
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       var dataLength = data.length,
+  //         i = 0,
+  //         volume: any = [];
+  //       for (i; i < dataLength; i += 1) {
+  //         volume.push([
+  //           data[i][0], // the date
+  //           data[i][5], // the volume
+  //         ]);
+  //       }
+  //       setTest1([...volume]);
+  //     });
+  // }, []);
   return (
     <div className={styles.coins} ref={gridItemRef}>
       {loading && <Loading />}
@@ -1008,7 +1295,7 @@ const Coins = () => {
                   </div>
                 </div>
               </div>
-              <CanvasJSStockChart
+              {/* <CanvasJSStockChart
                 containerProps={{
                   height: !zoom
                     ? (title.marketCap && title.vol) ||
@@ -1026,9 +1313,9 @@ const Coins = () => {
                   margin: "auto",
                 }}
                 options={options}
-                /* onRef = {ref => this.chart = ref} */
-              />
-              <div className={styles.market}>
+
+              /> */}
+              {/* <div className={styles.market}>
                 <div
                   onClick={() =>
                     setTitle({ ...title, marketCap: !title.marketCap })
@@ -1053,7 +1340,14 @@ const Coins = () => {
                     <b>DOM</b>
                   </h3>
                 </div>
-              </div>
+              </div> */}
+              <HighchartsReact
+                highcharts={Highcharts}
+                constructorType={"stockChart"}
+                options={option1}
+                // allowChartUpdate={true}
+                // immutable={false}
+              />
             </div>
           </div>
         </div>
