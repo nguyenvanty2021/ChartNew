@@ -1014,7 +1014,8 @@ const Coins = () => {
     //   text: "Total Cryptocurrency Price",
     // },
     // chart: {
-    //   type: "spline",
+    //   // type: "spline",
+
     // },
     // subtitle: {
     //   text: "Demo of placing the range selector above the navigator",
@@ -1040,6 +1041,7 @@ const Coins = () => {
     //     }
     //   }
     // },
+
     tooltip: {
       pointFormat:
         '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>',
@@ -1078,11 +1080,30 @@ const Coins = () => {
     //   },
     //   zoomType: "x",
     // },
+
+    // xAxis: {
+    //   minorTickInterval: "auto",
+    //   startOnTick: true,
+    //   endOnTick: true,
+    // },
     chart: {
       // type: "candlestick",
       zoomType: "x",
-
       height: !zoom ? 500 : 675,
+      // selectionMarkerFill: "red",
+      // shadow: true,
+      // alignThresholds: true,
+
+      // backgroundColor: "red",
+      // borderColor: "blue",
+      // plotBorderColor: "green",
+      // plotShadow: true,
+      // inverted: true,
+      // resetZoomButton: {
+      //   position: {
+      //     align: "left",
+      //   },
+      // },
     },
     // navigator: {
     //   adaptToUpdatedData: false,
@@ -1097,6 +1118,7 @@ const Coins = () => {
       // inputEnabled: false,
       allButtonsEnabled: true,
       selected: 6,
+      // floating: true,
       buttons: [
         {
           type: "day",
@@ -1137,8 +1159,17 @@ const Coins = () => {
     legend: {
       enabled: true,
     },
+    // xAxis: [
+    //   {
+    //     labels: {
+    //       allowOverlap: true,
+    //     },
+    //   },
+    // ],
+
     yAxis: [
       {
+        // zoomEnabled: false,
         // reversed: true,
         labels: {
           align: "left",
@@ -1146,6 +1177,9 @@ const Coins = () => {
           // formatter: (value) => {
           //   return console.log(value);
           // },
+          style: {
+            color: "#7CB5EC",
+          },
         },
         plotLines: [
           {
@@ -1156,8 +1190,12 @@ const Coins = () => {
         ],
         // showLastLabel: false,
         title: {
+          // reserveSpace: false,
           enabled: true,
           text: "Price",
+          style: {
+            color: "#7CB5EC",
+          },
         },
         height: "80%",
         // lineWidth: 2,
@@ -1169,9 +1207,16 @@ const Coins = () => {
         labels: {
           align: "left",
           x: 10,
+          style: {
+            color: "#434348",
+          },
         },
         title: {
+          reserveSpace: false,
           text: "Dom",
+          style: {
+            color: "#434348",
+          },
         },
         top: "80%",
         height: "20%",
@@ -1206,6 +1251,10 @@ const Coins = () => {
         yAxis: 1,
       },
     ],
+    // navigator: {
+    //   // maskFill: "#D9E0EF",
+    //   // outlineColor: "red",
+    // },
     responsive: {
       rules: [
         {
