@@ -1091,6 +1091,7 @@ const Coins = () => {
       // type: "candlestick",
       zoomType: "x",
       height: !zoom ? 500 : 675,
+
       // selectionMarkerFill: "red",
       // shadow: true,
       // alignThresholds: true,
@@ -1170,11 +1171,12 @@ const Coins = () => {
 
     yAxis: [
       {
+        opposite: false,
         // zoomEnabled: false,
         // reversed: true,
         labels: {
-          align: "left",
-          x: 10,
+          align: "right",
+          x: -15,
           // formatter: (value) => {
           //   return console.log(value);
           // },
@@ -1205,9 +1207,10 @@ const Coins = () => {
         },
       },
       {
+        opposite: false,
         labels: {
-          align: "left",
-          x: 10,
+          align: "right",
+          x: -15,
           style: {
             color: "#434348",
           },
@@ -1238,6 +1241,7 @@ const Coins = () => {
         //   valueDecimals: 2,
         // },
         id: "aapl-ohlc",
+
         data: listDataChart?.length > 0 ? listDataChart : [],
         // tooltip: {
         //   valueDecimals: 1,
