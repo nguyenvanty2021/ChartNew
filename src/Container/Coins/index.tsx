@@ -1043,8 +1043,8 @@ const Coins = () => {
     // },
 
     tooltip: {
-      pointFormat:
-        '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>',
+      // pointFormat:
+      //   '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>',
       valueDecimals:
         test1[0][1] < 0.01
           ? 7
@@ -1066,6 +1066,7 @@ const Coins = () => {
       //   width: "200px",
       // },
       shared: true,
+      crosshairs: true,
     },
     // chart: {
     //   events: {
