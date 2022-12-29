@@ -1082,7 +1082,7 @@ const Coins = () => {
       // type: "candlestick",
       zoomType: "x",
 
-      height: 400,
+      height: !zoom ? 500 : 675,
     },
     // navigator: {
     //   adaptToUpdatedData: false,
@@ -1342,6 +1342,7 @@ const Coins = () => {
                 </div>
               </div> */}
               <HighchartsReact
+                id="pdf"
                 highcharts={Highcharts}
                 constructorType={"stockChart"}
                 options={option1}
