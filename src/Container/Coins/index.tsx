@@ -392,8 +392,20 @@ const Coins = () => {
             //     v[0] >= listDataChartTemp[0][0] &&
             //     v[0] <= listDataChartTemp[listDataChartTemp.length - 1][0]
             // );
-
-            setTest1(test1.slice(index));
+            const resultFinish = test1.slice(index);
+            const listTempDom: any = [];
+            resultFinish.forEach((v, i) => {
+              if (
+                i === resultFinish.length - 1 ||
+                v[0] + 86400000 === resultFinish[i + 1][0]
+              ) {
+                listTempDom.push(v);
+              } else {
+                listTempDom.push(v);
+                listTempDom.push([v[0] + 86400000, v[1]]);
+              }
+            });
+            setTest1([...listTempDom]);
             setListDataChart([...listDataChartTemp]);
             setListChartModal([...listTemp]);
             setDataPoints([...listDataPoint]);
@@ -1030,7 +1042,6 @@ const Coins = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [statusClearDate]);
   const [test1, setTest1] = useState<any>(dataJson[0].data);
-
   const option1 = {
     // title: {
     //   text: "Total Cryptocurrency Price",
