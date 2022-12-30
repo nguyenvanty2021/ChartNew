@@ -383,6 +383,13 @@ const Coins = () => {
                 y: parseFloat(v?.[1]) / parseFloat(listCoinTo?.[index]?.[1]),
               });
             });
+            const resultFinal = test1.filter(
+              (v) =>
+                v[0] >= listDataChartTemp[0][0] &&
+                v[0] <= listDataChartTemp[listDataChartTemp.length - 1][0]
+            );
+
+            setTest1([...resultFinal]);
             setListDataChart([...listDataChartTemp]);
             setListChartModal([...listTemp]);
             setDataPoints([...listDataPoint]);
@@ -411,6 +418,13 @@ const Coins = () => {
                 y: parseFloat(v?.[1]) / parseFloat(result?.[index]?.[1]),
               });
             });
+            const resultFinal = test1.filter(
+              (v) =>
+                v[0] >= listDataChartTemp[0][0] &&
+                v[0] <= listDataChartTemp[listDataChartTemp.length - 1][0]
+            );
+
+            setTest1([...resultFinal]);
             setListDataChart([...listDataChartTemp]);
             setListChartModal([...listTemp]);
             setDataPoints([...listDataPoint]);
@@ -434,6 +448,13 @@ const Coins = () => {
                 y: parseFloat(v?.[1]) / parseFloat(listCoinTo?.[index]?.[1]),
               });
             });
+            const resultFinal = test1.filter(
+              (v) =>
+                v[0] >= listDataChartTemp[0][0] &&
+                v[0] <= listDataChartTemp[listDataChartTemp.length - 1][0]
+            );
+
+            setTest1([...resultFinal]);
             setListDataChart([...listDataChartTemp]);
             setListChartModal([...listTemp]);
             setDataPoints([...listDataPoint]);
@@ -1309,7 +1330,6 @@ const Coins = () => {
   //       setTest1([...volume]);
   //     });
   // }, []);
-
   return (
     <div className={styles.coins} ref={gridItemRef}>
       {loading && <Loading />}
