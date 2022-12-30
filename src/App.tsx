@@ -204,79 +204,66 @@ function App() {
   ) => {
     try {
       setLoading(true);
-      const res = await coinApi.getAllMarkets();
-      if (res.status === Status.SUCCESS) {
-        const result = object.pairOfCoin.split("/");
-        let idCoinFrom = "";
-        let priceCoinFrom = "";
-        let priceCoinTo = "";
-        res?.data?.length > 0 &&
-          res.data.forEach((values: any) => {
-            if (values.symbol === result[0].toLowerCase()) {
-              idCoinFrom = values.id;
-              priceCoinFrom = numeral(values.current_price).format("0.00000");
-            }
-            if (values.symbol === result[1].toLowerCase()) {
-              priceCoinTo = numeral(values.current_price).format("0.00000");
-            }
-          });
-        const listRespon = await Promise.all([
-          coinApi.getCoinByName(result[0]),
-          coinApi.getCoinByName(result[1]),
-        ]);
-        const index = Object.values(TimePeriod).findIndex(
-          (values) => values === object?.timeRange || ""
+      const result = object.pairOfCoin.split("/");
+      let idCoinFrom = "";
+      let priceCoinFrom = "";
+      let priceCoinTo = "";
+      const listRespon = await Promise.all([
+        coinApi.getCoinByName(result[0]),
+        coinApi.getCoinByName(result[1]),
+      ]);
+      const index = Object.values(TimePeriod).findIndex(
+        (values) => values === object?.timeRange || ""
+      );
+      if (
+        listRespon.length === 2 &&
+        result.length === 2 &&
+        index > -1 &&
+        listRespon[0]?.data?.coins?.length > 0 &&
+        listRespon[1]?.data?.coins?.length > 0
+      ) {
+        const listKeys = Object.keys(TimePeriod);
+        setCoin(
+          `${listRespon[0].data.coins[0].id}${listRespon[1].data.coins[0].id}`
         );
-        if (
-          listRespon.length === 2 &&
-          result.length === 2 &&
-          index > -1 &&
-          listRespon[0]?.data?.coins?.length > 0 &&
-          listRespon[1]?.data?.coins?.length > 0
-        ) {
-          const listKeys = Object.keys(TimePeriod);
-          setCoin(
-            `${listRespon[0].data.coins[0].id}${listRespon[1].data.coins[0].id}`
+        setListCheck(listRespon);
+        updateUrl("range", listKeys[index]);
+        if (listWatched?.length > 0) {
+          const founded = listWatched.every(
+            (el) =>
+              `${el.coinFrom}${el.coinTo}` !==
+              `${listRespon[0].data.coins[0].id}${listRespon[1].data.coins[0].id}`
           );
-          setListCheck(listRespon);
-          updateUrl("range", listKeys[index]);
-          if (listWatched?.length > 0) {
-            const founded = listWatched.every(
-              (el) =>
-                `${el.coinFrom}${el.coinTo}` !==
-                `${listRespon[0].data.coins[0].id}${listRespon[1].data.coins[0].id}`
-            );
-            if (founded) {
-              listWatched.push({
+          if (founded) {
+            listWatched.push({
+              coinFrom: listRespon[0].data.coins[0].id,
+              coinTo: listRespon[1].data.coins[0].id,
+              idCoinFrom,
+              watched: false,
+              priceCoinFrom,
+              priceCoinTo,
+            });
+            localStorage.setItem("listWatched", JSON.stringify(listWatched));
+          }
+        } else {
+          localStorage.setItem(
+            "listWatched",
+            JSON.stringify([
+              {
                 coinFrom: listRespon[0].data.coins[0].id,
                 coinTo: listRespon[1].data.coins[0].id,
                 idCoinFrom,
                 watched: false,
                 priceCoinFrom,
                 priceCoinTo,
-              });
-              localStorage.setItem("listWatched", JSON.stringify(listWatched));
-            }
-          } else {
-            localStorage.setItem(
-              "listWatched",
-              JSON.stringify([
-                {
-                  coinFrom: listRespon[0].data.coins[0].id,
-                  coinTo: listRespon[1].data.coins[0].id,
-                  idCoinFrom,
-                  watched: false,
-                  priceCoinFrom,
-                  priceCoinTo,
-                },
-              ])
-            );
-          }
-          notify("success", "Generate URL Successfully!", notifyTime);
-        } else {
-          notify("warning", "Pair of Coins is not valid!", notifyTime);
-          setListCheck([]);
+              },
+            ])
+          );
         }
+        notify("success", "Generate URL Successfully!", notifyTime);
+      } else {
+        notify("warning", "Pair of Coins is not valid!", notifyTime);
+        setListCheck([]);
       }
     } catch (error) {
       notify("error", "Error!", notifyTime);
