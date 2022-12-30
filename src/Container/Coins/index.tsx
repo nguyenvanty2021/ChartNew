@@ -1273,7 +1273,8 @@ const Coins = () => {
         // },
       },
       {
-        type: "column",
+        // type: "area",
+        // type: "column",
         id: "aapl-volume",
         name: "BTC Dom",
         color: "#434348",
