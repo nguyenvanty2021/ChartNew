@@ -1046,7 +1046,7 @@ const Coins = () => {
     // },
     tooltip: {
       // pointFormat:
-      //   '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>',
+      //   '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b>%<br/>',
       valueDecimals:
         test1[0][1] < 0.01
           ? 7
@@ -1219,7 +1219,7 @@ const Coins = () => {
         },
         title: {
           reserveSpace: false,
-          text: "Dom",
+          text: "BTC Dom",
           style: {
             color: "#434348",
           },
@@ -1253,7 +1253,7 @@ const Coins = () => {
       {
         type: "column",
         id: "aapl-volume",
-        name: "Dom",
+        name: "BTC Dom",
         data: test1?.length > 0 ? test1 : [],
         yAxis: 1,
       },
@@ -1261,7 +1261,7 @@ const Coins = () => {
     exporting: {
       chartOptions: {
         title: {
-          text: "export title",
+          text: "",
         },
       },
     },
