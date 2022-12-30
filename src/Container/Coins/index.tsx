@@ -383,13 +383,17 @@ const Coins = () => {
                 y: parseFloat(v?.[1]) / parseFloat(listCoinTo?.[index]?.[1]),
               });
             });
-            const resultFinal = test1.filter(
-              (v) =>
-                v[0] >= listDataChartTemp[0][0] &&
-                v[0] <= listDataChartTemp[listDataChartTemp.length - 1][0]
+            const index = test1.findIndex(
+              (v) => v[0] === listDataChartTemp[0][0]
             );
 
-            setTest1([...resultFinal]);
+            // const resultFinal = test1.filter(
+            //   (v) =>
+            //     v[0] >= listDataChartTemp[0][0] &&
+            //     v[0] <= listDataChartTemp[listDataChartTemp.length - 1][0]
+            // );
+
+            setTest1(test1.slice(index));
             setListDataChart([...listDataChartTemp]);
             setListChartModal([...listTemp]);
             setDataPoints([...listDataPoint]);
@@ -418,13 +422,10 @@ const Coins = () => {
                 y: parseFloat(v?.[1]) / parseFloat(result?.[index]?.[1]),
               });
             });
-            const resultFinal = test1.filter(
-              (v) =>
-                v[0] >= listDataChartTemp[0][0] &&
-                v[0] <= listDataChartTemp[listDataChartTemp.length - 1][0]
+            const index = test1.findIndex(
+              (v) => v[0] === listDataChartTemp[0][0]
             );
-
-            setTest1([...resultFinal]);
+            setTest1(test1.slice(index));
             setListDataChart([...listDataChartTemp]);
             setListChartModal([...listTemp]);
             setDataPoints([...listDataPoint]);
@@ -448,13 +449,10 @@ const Coins = () => {
                 y: parseFloat(v?.[1]) / parseFloat(listCoinTo?.[index]?.[1]),
               });
             });
-            const resultFinal = test1.filter(
-              (v) =>
-                v[0] >= listDataChartTemp[0][0] &&
-                v[0] <= listDataChartTemp[listDataChartTemp.length - 1][0]
+            const index = test1.findIndex(
+              (v) => v[0] === listDataChartTemp[0][0]
             );
-
-            setTest1([...resultFinal]);
+            setTest1(test1.slice(index));
             setListDataChart([...listDataChartTemp]);
             setListChartModal([...listTemp]);
             setDataPoints([...listDataPoint]);
