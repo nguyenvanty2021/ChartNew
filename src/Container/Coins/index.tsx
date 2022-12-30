@@ -1256,6 +1256,7 @@ const Coins = () => {
 
     series: [
       {
+        type: "area",
         // threshold: null,
         name: "Price",
         // tooltip: {
