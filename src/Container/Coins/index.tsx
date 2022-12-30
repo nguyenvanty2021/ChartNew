@@ -1066,22 +1066,7 @@ const Coins = () => {
     tooltip: {
       // pointFormat:
       //   '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b>%<br/>',
-      valueDecimals:
-        test1[0][1] < 0.01
-          ? 7
-          : test1[0][1] < 0.1
-          ? 5
-          : test1[0][1] < 10
-          ? 3
-          : 3,
-      changeDecimals:
-        test1[0][1] < 0.01
-          ? 7
-          : test1[0][1] < 0.1
-          ? 5
-          : test1[0][1] < 10
-          ? 3
-          : 3,
+
       split: false,
       // style: {
       //   width: "200px",
@@ -1263,7 +1248,24 @@ const Coins = () => {
         //   valueDecimals: 2,
         // },
         id: "aapl-ohlc",
-
+        color: "#7CB5EC",
+        fillColor: {
+          linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 },
+          stops: [
+            [0, "#7CB5EC"],
+            [1, Highcharts.color("#7CB5EC").setOpacity(0.1).get()],
+          ],
+        },
+        tooltip: {
+          valueDecimals:
+            test1[0][1] < 0.01
+              ? 7
+              : test1[0][1] < 0.1
+              ? 5
+              : test1[0][1] < 10
+              ? 3
+              : 3,
+        },
         data: listDataChart?.length > 0 ? listDataChart : [],
         // tooltip: {
         //   valueDecimals: 1,
@@ -1274,6 +1276,11 @@ const Coins = () => {
         type: "column",
         id: "aapl-volume",
         name: "BTC Dom",
+        color: "#434348",
+        tooltip: {
+          valueDecimals: 0,
+          valueSuffix: "%",
+        },
         data: test1?.length > 0 ? test1 : [],
         yAxis: 1,
       },
