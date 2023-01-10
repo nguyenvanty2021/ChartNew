@@ -7,7 +7,7 @@ import reportWebVitals from "./reportWebVitals";
 import "antd/dist/antd.css";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
-import Coins from "./Container/Coins";
+import Coins from "./container/Coins";
 const AppRoute = () => {
   return (
     <BrowserRouter>

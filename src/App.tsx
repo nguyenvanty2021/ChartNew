@@ -1,85 +1,19 @@
 import { Button, Col, Row, Table } from "antd";
 import styles from "./App.module.scss";
-import InputComponent from "./Components/Input/index";
+import InputComponent from "./components/Input/index";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Link } from "react-router-dom";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import * as yup from "yup";
-import numeral from "numeral";
-import { Status, TimeFilters } from "./Constants/enum";
-import { deleteUrl, getQueryParam, updateUrl } from "./Utils/query";
-import coinApi from "./Api/coinApi";
-import { notify } from "./Utils/notification";
-import Loading from "./Components/Loading";
+import { notifyTime, TimeFilters, TimePeriod } from "./constants/enum";
+import { deleteUrl, getQueryParam, updateUrl } from "./utils/query";
+import coinApi from "./api/coinApi";
+import { notify } from "./utils/notification";
+import Loading from "./components/Loading";
 import { useState } from "react";
 import { ColumnsType } from "antd/lib/table";
-import moment from "moment";
-interface FormProps<T> {
-  pairOfCoin: T;
-  timeRange: any;
-}
-export interface TimeRangeProps<T> {
-  id: T;
-  value: T;
-  key: T;
-}
-export interface ListWatchedProps {
-  coinFrom: string;
-  coinTo: string;
-  idCoinFrom: string;
-  watched: boolean;
-  priceCoinFrom: string;
-  priceCoinTo: string;
-}
-export const notifyTime = 1500;
-export const TimePeriod: any = {
-  "1D": TimeFilters.P1D,
-  "7D": TimeFilters.P7D,
-  "1M": TimeFilters.P1M,
-  "3M": TimeFilters.P3M,
-  "1Y": TimeFilters.P1Y,
-  YTD: String(moment().diff(`${moment().get("year")}/01/01`, "days")),
-  ALL: TimeFilters.ALL,
-};
-export const listTimeRange: TimeRangeProps<string>[] = [
-  {
-    id: "1",
-    key: "1D",
-    value: TimeFilters.P1D,
-  },
-  {
-    id: "2",
-    key: "7D",
-    value: TimeFilters.P7D,
-  },
-  {
-    id: "3",
-    key: "1M",
-    value: TimeFilters.P1M,
-  },
-  {
-    id: "4",
-    key: "3M",
-    value: TimeFilters.P3M,
-  },
-  {
-    id: "5",
-    key: "1Y",
-    value: TimeFilters.P1Y,
-  },
-  {
-    id: "7",
-    key: "YTD",
-    value: String(moment().diff(`${moment().get("year")}/01/01`, "days")),
-  },
-  {
-    id: "6",
-    key: "ALL",
-    value: TimeFilters.ALL,
-  },
-];
-export const handleFormatCoinPrice = (coin: number) =>
-  coin < 0.001 ? 7 : coin < 0.01 ? 5 : coin < 10 ? 3 : 3;
+import { FormProps, listTimeRange, ListWatchedProps } from "./models";
+import { handleFormatPrice } from "./utils/format";
 export const DrawerComponent = ({
   list,
   priceCurrent,
@@ -118,27 +52,12 @@ export const DrawerComponent = ({
           <p>
             {priceCurrent !== 0 &&
             coinCurrent === `${record.coinFrom}/${record.coinTo}`.toUpperCase()
-              ? priceCurrent.toFixed(handleFormatCoinPrice(priceCurrent))
-              : `${total.toFixed(handleFormatCoinPrice(total))}`}
+              ? priceCurrent.toFixed(handleFormatPrice(priceCurrent))
+              : `${total.toFixed(handleFormatPrice(total))}`}
           </p>
         );
       },
     },
-    // {
-    //   title: "Link",
-    //   dataIndex: "link",
-    //   key: "link",
-    //   render: (_, record) => (
-    //     <a
-    //       onClick={() => handleCloseDrawer(false)}
-    //       href={`/coins/${record.coinFrom}/${record.coinTo}?range=1D`}
-    //       rel="noreferrer"
-    //       target="_blank"
-    //     >
-    //       Link
-    //     </a>
-    //   ),
-    // },
   ];
   return (
     <Row>
@@ -222,12 +141,11 @@ function App() {
         listRespon[0]?.data?.coins?.length > 0 &&
         listRespon[1]?.data?.coins?.length > 0
       ) {
-        const listKeys = Object.keys(TimePeriod);
         setCoin(
           `${listRespon[0].data.coins[0].id}${listRespon[1].data.coins[0].id}`
         );
         setListCheck(listRespon);
-        updateUrl("range", listKeys[index]);
+        updateUrl("range", "ALL");
         if (listWatched?.length > 0) {
           const founded = listWatched.every(
             (el) =>
@@ -298,18 +216,6 @@ function App() {
               />
             </Col>
           </Row>
-          {/* <Row className={styles.container__item}>
-            <Col xs={24} sm={24} md={2} lg={2} xl={2}>
-              <h3>Time range: </h3>
-            </Col>
-            <Col xs={24} sm={24} md={22} lg={22} xl={22}>
-              <SelectComponent
-                data={listTimeRange}
-                name="timeRange"
-                placeholder="Select time range"
-              />
-            </Col>
-          </Row> */}
           <Row className={styles.container__item}>
             <Col xs={24} sm={24} md={24} lg={2} xl={2}></Col>
             <Col xs={24} sm={22} md={22} lg={22} xl={22}>

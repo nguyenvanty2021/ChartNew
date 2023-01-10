@@ -9,7 +9,6 @@ const InputComponent = ({
   disable,
   type,
   iconPosition,
-
   className,
 }: {
   type: string;
@@ -17,7 +16,6 @@ const InputComponent = ({
   disable?: boolean;
   className?: string;
   placeholder: string;
-
   icon?: any;
   iconPosition?: string;
 }) => {

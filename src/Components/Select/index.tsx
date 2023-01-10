@@ -2,7 +2,7 @@ import { Controller, useFormContext } from "react-hook-form";
 import { Select } from "antd";
 import { CaretDownOutlined } from "@ant-design/icons";
 import TextErrors from "../TextErrors";
-import { TimeRangeProps } from "../../App";
+import { TimeRangeProps } from "../../models";
 const { Option } = Select;
 const SelectComponent = ({
   name,
